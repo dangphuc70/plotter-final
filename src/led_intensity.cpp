@@ -327,7 +327,7 @@ void WaitStepStopped(){
 	xSemaphoreTake(Step_stopped_binary, portMAX_DELAY);
 }
 
-void test_line_task(void *pvParameters){
+void square_corner_test(void *pvParameters){
 	X_axis_Init();
 	Y_axis_Init();
 
@@ -337,7 +337,7 @@ void test_line_task(void *pvParameters){
 					 LIM2Y,
 					 2000,
 					 boolDIRECTION_2,
-					 2000);
+					 6);
 	StepGO();
 	WaitStepStopped();
 	step_set_on_data(STEPX,
@@ -346,7 +346,7 @@ void test_line_task(void *pvParameters){
 					 LIM2X,
 					 2000,
 					 boolDIRECTION_1,
-					 2000);	
+					 6);
 	StepGO();
 	WaitStepStopped();
 
@@ -370,9 +370,117 @@ void GoHome_test(void *pvParameters){
 	vTaskDelay(portMAX_DELAY);
 }
 
+void little_line_X_first(int xstep, int ystep, int us){
+	bool direction_x = (xstep > 0) ? (boolDIRECTION_2) : (boolDIRECTION_1);
+	bool direction_y = (ystep > 0) ? (boolDIRECTION_2) : (boolDIRECTION_1);
+	if(xstep < 0) xstep = -xstep;
+	if(ystep < 0) ystep = -ystep;
+
+	step_set_on_data(STEPX,
+					 DIRX,
+					 LIM1X,
+					 LIM2X,
+					 xstep,
+					 direction_x,
+					 us);
+	StepGO();
+	WaitStepStopped();
+	step_set_on_data(STEPY,
+					 DIRY,
+					 LIM1Y,
+					 LIM2Y,
+					 ystep,
+					 direction_y,
+					 us);
+	StepGO();
+	WaitStepStopped();
+}
+
+void draw_line_test(void *pvParameters){
+	while(step_OK(DIRX, LIM1X, LIM2X) && step_OK(DIRY, LIM1Y, LIM2Y)){
+		little_line_X_first(-1, -2, 50);
+	}
+	vTaskDelay(portMAX_DELAY);
+}
+
+void big_line_X_first(int times, int x, int y, int us){
+	while(times > 0 && step_OK(DIRX, LIM1X, LIM2X) && step_OK(DIRY, LIM1Y, LIM2Y)){
+		little_line_X_first(x, y, us);
+		times--;
+	}
+}
+
+void aligned_square(){
+	big_line_X_first(4000,  1,  0, 6);
+	big_line_X_first(4000,  0,  1, 6);
+	big_line_X_first(4000, -1,  0, 6);
+	big_line_X_first(4000,  0, -1, 6);
+}
+
+void tilted_square(){
+	big_line_X_first(4000,  1,  1, 6);
+	big_line_X_first(4000, -1,  1, 6);
+	big_line_X_first(4000, -1, -1, 6);
+	big_line_X_first(4000,  1, -1, 6);
+}
+
+void tilted_square2(){
+	big_line_X_first(4000,  1,  -2, 6);
+	big_line_X_first(4000, -2,  -1, 6);
+	big_line_X_first(4000, -1, 2, 6);
+	big_line_X_first(4000,  2, 1, 6);
+}
+
+void square_test(void *pvParameters){
+	for(int i = 0; i < 3; ++i)
+		aligned_square();
+	for(int i = 0; i < 3; ++i)
+		tilted_square();
+	for(int i = 0; i < 3; ++i)
+		tilted_square2();
+	vTaskDelay(portMAX_DELAY);
+}
+
+int measureX(){
+	int result = 0;
+	GoHome();
+	DIRX->write(boolDIRECTION_2);
+	while(step_OK(DIRX, LIM1X, LIM2X)){
+		step(STEPX, 6);
+		result++;
+	}
+	return result;
+}
+int measureY(){
+	int result = 0;
+	GoHome();
+	DIRY->write(boolDIRECTION_2);
+	while(step_OK(DIRY, LIM1Y, LIM2Y)){
+		step(STEPY, 6);
+		result++;
+	}
+	return result;
+}
+
+void measureXY(){
+	char result[50];
+	int xtotal, ytotal;
+	xtotal = measureX();
+	ytotal = measureY();
+	snprintf(result, 50, "X : %d\nY : %d\n", xtotal, ytotal);
+	ITM_write(result);
+}
+
+void measureXY_task(void *pvParameters){
+	for(int i = 0; i < 3; ++i){
+		measureXY();
+	}
+	vTaskDelay(portMAX_DELAY);
+}
+
 void test_init()
 {
-	xTaskCreate(GoHome_test, "GoHome_test", configMINIMAL_STACK_SIZE * 4, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(measureXY_task, "measureXY_task", configMINIMAL_STACK_SIZE * 4, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void) {
@@ -383,6 +491,9 @@ int main(void) {
 
 	On_data_Init();
 	step_tasks_Init();
+
+	X_axis_Init();
+	Y_axis_Init();
 
 	test_init();
 //	xTaskCreate(limit_test, "limit_test", configMINIMAL_STACK_SIZE * 4, NULL, tskIDLE_PRIORITY + 1UL, NULL);
