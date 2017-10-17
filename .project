@@ -27,4 +27,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>inc/axes.h</name>
+			<type>1</type>
+			<location>C:/Users/Lutuquay/Documents/MCUXpressoIDE_10.0.2_411/workspace/plotter_final/inc/axes.h</location>
+		</link>
+	</linkedResources>
 </projectDescription>
