@@ -57,9 +57,16 @@ static DigitalIoPin *led;
 static void RIT_led(void *pvParameters)
 {
 	led = new DigitalIoPin(0, 25, DigitalIoPin::output, false);
+	axes_Init();
 
+	PIN_INT_Init();
 	RIT_stepper_Init();
-	RIT_set(led, 20, 500000);
+
+	dir_x->write(Dir_1);
+	dir_y->write(Dir_1);
+
+	led->write(true);
+	RIT_set(led, 2 * 200 - 1, 500000);
 	RIT_start();
 	vTaskDelay(portMAX_DELAY);
 }
