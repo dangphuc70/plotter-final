@@ -28,7 +28,7 @@
 
 #include "axes.h"
 #include "RIT_stepper.h"
-#include <pin_interrupt_limits.h>
+#include "pin_interrupt_limits.h"
 
 
 
@@ -40,6 +40,17 @@ static void prvSetupHardware(void)
 
 	/* Initial LED0 state is off */
 	Board_LED_Set(0, true);
+}
+
+/* the following is required if runtime statistics are to be collected */
+extern "C" {
+
+void vConfigureTimerForRunTimeStats( void ) {
+	Chip_SCT_Init(LPC_SCTSMALL1);
+	LPC_SCTSMALL1->CONFIG = SCT_CONFIG_32BIT_COUNTER;
+	LPC_SCTSMALL1->CTRL_U = SCT_CTRL_PRE_L(255) | SCT_CTRL_CLRCTR_L; // set prescaler to 256 (255 + 1), and start timer
+}
+
 }
 
 int main(void)
