@@ -1,5 +1,4 @@
 #include "chip.h"
-
 #include "DigitalIoPin.h" // for pin initialization
 
 #include "axes.h" // for port and pin numbers of lim_x1, lim_x2, lim_y1, lim_y2, and Direction consts
@@ -49,7 +48,8 @@ extern "C"
 		
 		if(dir_x->read() == Dir_1)
 		{
-			StopRITFromISR(&xHigherPriorityWoken);
+			Chip_RIT_Disable(LPC_RITIMER);
+			xSemaphoreGiveFromISR(sbRIT, &xHigherPriorityWoken);
 		}
 
 		// step :
@@ -67,7 +67,8 @@ extern "C"
 		
 		if(dir_x->read() == Dir_2)
 		{
-			StopRITFromISR(&xHigherPriorityWoken);
+			Chip_RIT_Disable(LPC_RITIMER);
+			xSemaphoreGiveFromISR(sbRIT, &xHigherPriorityWoken);
 		}
 
 		// step :
@@ -85,7 +86,8 @@ extern "C"
 		
 		if(dir_y->read() == Dir_1)
 		{
-			StopRITFromISR(&xHigherPriorityWoken);
+			Chip_RIT_Disable(LPC_RITIMER);
+			xSemaphoreGiveFromISR(sbRIT, &xHigherPriorityWoken);
 		}
 
 		// step :
@@ -103,7 +105,8 @@ extern "C"
 		
 		if(dir_y->read() == Dir_2)
 		{
-			StopRITFromISR(&xHigherPriorityWoken);
+			Chip_RIT_Disable(LPC_RITIMER);
+			xSemaphoreGiveFromISR(sbRIT, &xHigherPriorityWoken);
 		}
 
 		// step :
