@@ -37,6 +37,10 @@ DigitalIoPin *step_y;
 DigitalIoPin *dir_x;
 DigitalIoPin *dir_y;
 
+
+const bool Dir_1 = false;
+const bool Dir_2 = true;
+
 void axes_Init() {
 	lim_x1 = new DigitalIoPin(port_lim_x1, pin_lim_x1, DigitalIoPin::pullup, true);
 	lim_x2 = new DigitalIoPin(port_lim_x2, pin_lim_x2, DigitalIoPin::pullup, true);

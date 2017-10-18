@@ -38,6 +38,9 @@ extern DigitalIoPin *step_y;
 extern DigitalIoPin *dir_x;
 extern DigitalIoPin *dir_y;
 
+extern const bool Dir_1;
+extern const bool Dir_2;
+
 void axes_Init();
 
 #endif

@@ -1,5 +1,3 @@
-
-
 #ifndef RIT_STEPPER_H_
 #define RIT_STEPPER_H_
 
@@ -15,7 +13,7 @@ extern SemaphoreHandle_t sbRIT;
 
 void RIT_stepper_Init(void);
 
-inline void give_sbRIT_fromISR(portBASE_TYPE *ptrxHigherPriorityWoken) {
+inline void Give_sbRITFromISR(portBASE_TYPE *ptrxHigherPriorityWoken) {
 	Chip_RIT_Disable(LPC_RITIMER); // disable timer
 	// Give semaphore and set context switch flag if a higher priority task was woken up
 	xSemaphoreGiveFromISR(sbRIT, ptrxHigherPriorityWoken);

@@ -34,7 +34,7 @@ extern "C"
 			toggle_pin->write(!toggle_pin->read());
 			}
 			else{
-				give_sbRIT_fromISR(&xHigherPriorityWoken);
+				Give_sbRITFromISR(&xHigherPriorityWoken);
 		}
 		// End the ISR and (possibly) do a context switch
 		portEND_SWITCHING_ISR(xHigherPriorityWoken);
