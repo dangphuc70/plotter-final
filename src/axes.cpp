@@ -1,28 +1,28 @@
 #include "axes.h"
 
 const int port_lim_x1 = 0;
-const int  pin_lim_x1 = 0;
+const int  pin_lim_x1 = 29;
 const int port_lim_x2 = 0;
-const int  pin_lim_x2 = 0;
+const int  pin_lim_x2 = 9;
 
-const int port_lim_y1 = 0;
-const int  pin_lim_y1 = 0;
+const int port_lim_y1 = 1;
+const int  pin_lim_y1 = 3;
 const int port_lim_y2 = 0;
 const int  pin_lim_y2 = 0;
 
 
 const int port_step_x = 0;
-const int  pin_step_x = 0;
+const int  pin_step_x = 24;
 
 const int port_step_y = 0;
-const int  pin_step_y = 0;
+const int  pin_step_y = 27;
 
 
-const int port_dir_x = 0;
+const int port_dir_x = 1;
 const int  pin_dir_x = 0;
 
 const int port_dir_y = 0;
-const int  pin_dir_y = 0;
+const int  pin_dir_y = 28;
 
 
 
