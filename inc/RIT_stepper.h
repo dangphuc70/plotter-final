@@ -7,12 +7,12 @@
 extern int RIT_count;
 extern SemaphoreHandle_t sbRIT;
 
+void RIT_stepper_Init(void);
+
 void RIT_start(void);
 
-void RIT_set(int count, int us, DigitalIoPin * step_pin);
+void RIT_set(DigitalIoPin * step_pin, int count, int us);
 void RIT_set(int count, int us);
-
-void RIT_stepper_Init(void);
 
 
 

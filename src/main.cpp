@@ -19,7 +19,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "DigitalIoPin.h"
+
 #include "queue.h"
 #include "semphr.h"
 
@@ -53,13 +53,25 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
+static DigitalIoPin *led;
+static void RIT_led(void *pvParameters)
+{
+	led = new DigitalIoPin(0, 25, DigitalIoPin::output, false);
+
+	RIT_stepper_Init();
+	RIT_set(led, 20, 500000);
+	RIT_start();
+	vTaskDelay(portMAX_DELAY);
+}
+
 int main(void)
 {
-	step_x->write(true);
+	prvSetupHardware();
 
-	while(1)
-	{
+	xTaskCreate(RIT_led, "RIT_led", 4 * configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	
+	vTaskStartScheduler();
 
-	}
+	while(1);
 	return 1;
 }

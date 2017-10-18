@@ -9,6 +9,23 @@ SemaphoreHandle_t sbRIT;
 
 static DigitalIoPin *toggle_pin;
 
+
+
+void RIT_stepper_Init(void) {
+    // step 1 :
+    // initialize RIT (= enable clocking etc.)
+    Chip_RIT_Init(LPC_RITIMER);
+    // set the priority level of the interrupt
+    // The level must be equal or lower than the maximum priority specified in FreeRTOS config
+    // Note that in a Cortex-M3 a higher number indicates lower interrupt priority
+    NVIC_SetPriority( RITIMER_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
+
+    // step 2 : create RIT_stop binary
+    sbRIT = xSemaphoreCreateBinary();
+}
+
+
+
 void RIT_start(void) {
     // RIT status : start
     Chip_RIT_Enable(LPC_RITIMER);
@@ -25,7 +42,7 @@ void RIT_start(void) {
     // RIT status : stop
 }
 
-void RIT_set(int count, int us, DigitalIoPin * step_pin) {
+void RIT_set(DigitalIoPin * step_pin, int count, int us) {
 	// step 1 : configure RIT parameters
     RIT_set(count, us);
 
@@ -54,18 +71,7 @@ void RIT_set(int count, int us) {
            Chip_RIT_SetCompareValue(LPC_RITIMER, cmp_value);
 }
 
-void RIT_stepper_Init(void) {
-    // step 1 :
-    // initialize RIT (= enable clocking etc.)
-    Chip_RIT_Init(LPC_RITIMER);
-    // set the priority level of the interrupt
-    // The level must be equal or lower than the maximum priority specified in FreeRTOS config
-    // Note that in a Cortex-M3 a higher number indicates lower interrupt priority
-    NVIC_SetPriority( RITIMER_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
 
-    // step 2 : create RIT_stop binary
-    sbRIT = xSemaphoreCreateBinary();
-}
 
 
 
