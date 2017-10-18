@@ -4,11 +4,11 @@
 
 #include "axes.h" // for port and pin numbers of lim_x1, lim_x2, lim_y1, lim_y2, and Direction consts
 #include "pin_interrupt_limits.h"
-#include "RIT_stepper.h" // for Give_sbRITFromISR ()
+#include "RIT_stepper.h" // for StopRITFromISR ()
 
 // block 1 : Initialize pin interrupt
 // for limit switch (4 limits)
-void PIN_INT_Init(void)
+void PIN_INT_Limits_Init(void)
 {
 	// Initialize pin-interrupts
 	// step 1
@@ -38,7 +38,7 @@ extern "C"
 		// step 3 : examine current dir.
 		if(dir_x->read() == Dir_1) {
 			// give RIT stop binary
-			Give_sbRITFromISR(&xHigherPriorityWoken);
+			StopRITFromISR(&xHigherPriorityWoken);
 		}
 		
 		// step 4 : end the ISR and (possibly) do a context switch
@@ -56,7 +56,7 @@ extern "C"
 		// step 3 : examine current dir.
 		if(dir_x->read() == Dir_2) {
 			// give RIT stop binary
-			Give_sbRITFromISR(&xHigherPriorityWoken);
+			StopRITFromISR(&xHigherPriorityWoken);
 		}
 		
 		// step 4 : end the ISR and (possibly) do a context switch
@@ -74,7 +74,7 @@ extern "C"
 		// step 3 : examine current dir.
 		if(dir_y->read() == Dir_1) {
 			// give RIT stop binary
-			Give_sbRITFromISR(&xHigherPriorityWoken);
+			StopRITFromISR(&xHigherPriorityWoken);
 		}
 		
 		// step 4 : end the ISR and (possibly) do a context switch
@@ -92,7 +92,7 @@ extern "C"
 		// step 3 : examine current dir.
 		if(dir_y->read() == Dir_2) {
 			// give RIT stop binary
-			Give_sbRITFromISR(&xHigherPriorityWoken);
+			StopRITFromISR(&xHigherPriorityWoken);
 		}
 		
 		// step 4 : end the ISR and (possibly) do a context switch
