@@ -20,15 +20,17 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "ITM_write.h"
-#include "DigitalIoPin.h"
+#include "queue.h"
+#include "semphr.h"
 
+#include "DigitalIoPin.h"
+#include "ITM_write.h"
 
 #include "axes.h"
 #include "RIT_stepper.h"
 #include "pin_interrupt_limits.h"
 
-#include <cstdio> // for snprintf
+
 
 /* Sets up system hardware */
 static void prvSetupHardware(void)
@@ -38,14 +40,6 @@ static void prvSetupHardware(void)
 
 	/* Initial LED0 state is off */
 	Board_LED_Set(0, true);
-	// initialize RIT (= enable clocking etc.)
-	Chip_RIT_Init(LPC_RITIMER);
-	// set the priority level of the interrupt
-	// The level must be equal or lower than the maximum priority specified in FreeRTOS config
-	// Note that in a Cortex-M3 a higher number indicates lower interrupt priority
-	NVIC_SetPriority( RITIMER_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
-	Stop_binary_RIT_Init();
-
 }
 
 /* the following is required if runtime statistics are to be collected */
@@ -59,24 +53,25 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
-
-
-static DigitalIoPin * led;
+static DigitalIoPin *led;
 static void RIT_led(void *pvParameters)
 {
 	led = new DigitalIoPin(0, 25, DigitalIoPin::output, false);
-	RIT_start_toggle(led, 20, 500000);
+
+	RIT_stepper_Init();
+	RIT_set(led, 20, 500000);
+	RIT_start();
 	vTaskDelay(portMAX_DELAY);
 }
 
 int main(void)
 {
-	// step 1 : initialize hardware
 	prvSetupHardware();
-	ITM_init();
 
 	xTaskCreate(RIT_led, "RIT_led", 4 * configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 	
 	vTaskStartScheduler();
+
+	while(1);
 	return 1;
 }
