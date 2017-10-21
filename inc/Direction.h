@@ -23,7 +23,9 @@ class Direction
 
 	public:
 		
-		Direction();
+		Direction(DigitalIoPin * lim0_,
+				  DigitalIoPin * lim1_,
+				  DigitalIoPin * dir_);
 		~Direction();
 	
 };
