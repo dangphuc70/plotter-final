@@ -1,5 +1,5 @@
-#ifndef DIRECTION_H_
-#define DIRECTION_H_
+#ifndef DIRECTION_FUNCTION_H_
+#define DIRECTION_FUNCTION_H_
 
 #include "DigitalIoPin.h"
 

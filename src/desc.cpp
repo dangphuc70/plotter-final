@@ -11,9 +11,9 @@ PinDesc::PinDesc(int port_,
 
 }
 
-AxisDesc::AxisDesc(const PinDesc& dir_
+AxisDesc::AxisDesc(const PinDesc& dir_,
 				   const PinDesc& step_,
-				   const PinDesc& lim0_
+				   const PinDesc& lim0_,
 				   const PinDesc& lim1_)
 	: dir(dir_),
 	  step(step_),

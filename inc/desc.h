@@ -30,9 +30,9 @@ class AxisDesc
 
 	public:
 
-		AxisDesc(const PinDesc& dir_
+		AxisDesc(const PinDesc& dir_,
 				 const PinDesc& step_,
-				 const PinDesc& lim0_
+				 const PinDesc& lim0_,
 				 const PinDesc& lim1_);
 		~AxisDesc();
 	

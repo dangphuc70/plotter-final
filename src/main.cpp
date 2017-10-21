@@ -26,10 +26,6 @@
 #include "DigitalIoPin.h"
 #include "ITM_write.h"
 
-#include "axes.h"
-#include "RIT_stepper.h"
-#include "pin_interrupt_limits.h"
-
 
 
 /* Sets up system hardware */
@@ -53,33 +49,12 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
-static DigitalIoPin *led;
-static void RIT_led(void *pvParameters)
-{
-	// create test step pin = led pin
-	led = new DigitalIoPin(0, 25, DigitalIoPin::output, false);
-
-	// init axes info., pin interrupts, RIT
-	axes_Init();
-	PIN_INT_Init();
-	RIT_stepper_Init();
-
-	// set directions towards origin (_1)
-	dir_x->write(Dir_1);
-	dir_y->write(Dir_1);
-
-	// start toggling to create 200 steps
-	led->write(true);
-	RIT_set(led, 2 * 200 - 1, 500000);
-	RIT_start();
-	vTaskDelay(portMAX_DELAY);
-}
 
 int main(void)
 {
 	prvSetupHardware();
 
-	xTaskCreate(RIT_led, "RIT_led", 4 * configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+
 	
 	vTaskStartScheduler();
 
