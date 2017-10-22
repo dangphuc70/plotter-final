@@ -26,6 +26,7 @@
 #include "DigitalIoPin.h"
 #include "ITM_write.h"
 
+#include "include.h"
 
 
 /* Sets up system hardware */
@@ -49,6 +50,15 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
+static void a1(void *pvParameters){
+	DigitalIoPin * sw1 = new DigitalIoPin(0, 17, DigitalIoPin::pullup, true);
+	DigitalIoPin * sw3 = new DigitalIoPin(1,  9, DigitalIoPin::pullup, true);
+	DigitalIoPin * sw2 = new DigitalIoPin(1, 11, DigitalIoPin::pullup, true);
+	DigitalIoPin * led_step = new DigitalIoPin(0, 25, DigitalIoPin::output);
+	DigitalIoPin * led_dir = new DigitalIoPin(0,  3, DigitalIoPin::output);
+
+	Axis led_set(sw1, sw3, led_dir, led_step);
+}
 
 int main(void)
 {
@@ -58,6 +68,5 @@ int main(void)
 	
 	vTaskStartScheduler();
 
-	while(1);
 	return 1;
 }

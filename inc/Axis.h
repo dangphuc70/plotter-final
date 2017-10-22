@@ -3,7 +3,6 @@
 
 #include "DigitalIoPin.h"
 #include "Direction.h"
-#include "desc.h"
 
 class Axis
 {
@@ -21,11 +20,12 @@ class Axis
 
 	public:
 
-		Axis(const AxisDesc& axis);
+		Axis(DigitalIoPin * lim0_,
+			 DigitalIoPin * lim1_,
+			 DigitalIoPin * dir_,
+			 DigitalIoPin * step_);
 		~Axis();
 	
-	private:
-
-		DigitalIoPin * digi(const PinDesc& pin);
 };
+
 #endif
