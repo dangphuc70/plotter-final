@@ -20,6 +20,7 @@ class Direction
 		
 		bool operator()(bool Dir_t);
 		bool operator()();
+		int  show_code();
 
 	public:
 		

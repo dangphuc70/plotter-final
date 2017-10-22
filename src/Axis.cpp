@@ -1,9 +1,9 @@
 #include "Axis.h"
 
-Axis::Axis(DigitalIoPin * dir_,
-		   DigitalIoPin * step_,
-		   DigitalIoPin * lim0_,
-		   DigitalIoPin * lim1_)
+Axis::Axis(DigitalIoPin * lim0_,
+		   DigitalIoPin * lim1_,
+		   DigitalIoPin * dir_,
+		   DigitalIoPin * step_)
 	: dir(dir_),
 	  step(step_),
 	  lim0(lim0_),
