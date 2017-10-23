@@ -12,20 +12,39 @@ class rit
 		static SemaphoreHandle_t stop_b;
 		static int count;
 		static DigitalIoPin * pin;
+		static SemaphoreHandle_t mutex;
+
+	public:
+
+		static portBASE_TYPE take(TickType_t timeout);
+		static void give();
 
 	public:
 
 		static void StopFromISR(portBASE_TYPE *ptr);
+		static portBASE_TYPE WaitForStop(TickType_t);
+		
+	public:
+
 		static void SetPin(DigitalIoPin * pin);
 		static void SetCount(int count);
 		static void SetPulsePerSecond(int pps); // will stop RIT from counting
+		
+	public:
+
 		static void Enable();
 		static void Disable();
 		static void Run();
+		
+	public:
+
 		static void SetRun(int pps, int count);
 		static void SetRun(int count);
 		static void SetRun(DigitalIoPin * pin, int count, int pps);
-		static portBASE_TYPE WaitForStop(TickType_t);
+		static void SetRun(DigitalIoPin * pin, int count);
+		
+	public:
+
 		static void init();
 
 	public:

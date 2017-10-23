@@ -4,6 +4,7 @@
 SemaphoreHandle_t rit::stop_b = xSemaphoreCreateBinary();
 int rit::count = 0;
 DigitalIoPin * rit::pin = NULL;
+SemaphoreHandle_t rit::mutex = xSemaphoreCreateMutex();
 
 void rit::ISR(void){
 	// This used to check if a context switch is required
@@ -26,6 +27,13 @@ extern "C"{
 void RIT_IRQHandler(void){
 	rit::ISR();
 }
+}
+
+portBASE_TYPE rit::take(TickType_t timeout){
+	return xSemaphoreTake(mutex, timeout);
+}
+void rit::give(){
+	xSemaphoreGive(mutex);
 }
 
 void rit::StopFromISR(portBASE_TYPE *ptr){
@@ -82,6 +90,13 @@ void rit::SetRun(int count){
 }
 void rit::SetRun(DigitalIoPin * pin, int count, int pps){
 	SetPulsePerSecond(pps);
+	SetCount(count);
+	SetPin(pin);
+	Run();
+}
+void rit::SetRun(DigitalIoPin * pin, int count){
+	rit::Disable();
+	Chip_RIT_SetCounter(LPC_RITIMER, 0);
 	SetCount(count);
 	SetPin(pin);
 	Run();

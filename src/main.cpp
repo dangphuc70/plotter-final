@@ -47,26 +47,29 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
-void rit_test(int port,
-			  int pin,
-			  DigitalIoPin::pinMode mode,
-			  bool invert,
-			  int count,
-			  int pps){
-	DigitalIoPin * opin = new DigitalIoPin(port, pin, mode, invert);
-	rit stepper(opin, pps, count);
-	stepper.WritePin(true);
-	stepper.Run();
-	delete opin;
-}
+static void axis_test(void *pvParameters){
+	DigitalIoPin * sw1   = new DigitalIoPin(0, 17, DigitalIoPin::pullup, true);
+	DigitalIoPin * sw3   = new DigitalIoPin(1,  9, DigitalIoPin::pullup, true);
+	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
+	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
 
-static void rit_test(void *pvParameters){
-	rit_test(0, 25, DigitalIoPin::output, false, 2*10-1, 4);
+	Axis led_set(sw1, sw3, red, green, 10, 5);
+
+	green->write(true);
+
+	// driving essential
+	rit stepper(green, 1);
+
+	Board_LED_Set(2, false);
+	if((led_set -= 5) == 5){
+		Board_LED_Set(2, true);
+	}
+
 	vTaskDelay(portMAX_DELAY);
 }
 
 void task_init(){
-	xTaskCreate(rit_test, "rit_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(axis_test, "axis_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){
