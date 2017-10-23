@@ -54,15 +54,14 @@ void rit_test(int port,
 			  int count,
 			  int pps){
 	DigitalIoPin * opin = new DigitalIoPin(port, pin, mode, invert);
-	rit::init();
-	rit::SetPin(opin);
-	rit::SetPin(true);
-	rit::SetRun(count, pps);
+	rit stepper(opin, pps, count);
+	stepper.WritePin(true);
+	stepper.Run();
 	delete opin;
 }
 
 static void rit_test(void *pvParameters){
-	rit_test(0, 25, DigitalIoPin::output, false, 19, 1);
+	rit_test(0, 25, DigitalIoPin::output, false, 2*10-1, 4);
 	vTaskDelay(portMAX_DELAY);
 }
 
@@ -70,14 +69,12 @@ void task_init(){
 	xTaskCreate(rit_test, "rit_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
-int main(void)
-{
+int main(void){
 	prvSetupHardware();
 	ITM_init();
-
-	task_init();
 	
-	vTaskStartScheduler();
+	task_init();
 
+	vTaskStartScheduler();
 	return 1;
 }

@@ -69,8 +69,14 @@ void rit::Run(){
 		NVIC_DisableIRQ(RITIMER_IRQn);
 	}
 }
-void rit::SetRun(int count, int pps){
+void rit::SetRun(int pps, int count){
 	SetPulsePerSecond(pps);
+	SetCount(count);
+	Run();
+}
+void rit::SetRun(int count){
+	rit::Disable();
+	Chip_RIT_SetCounter(LPC_RITIMER, 0);
 	SetCount(count);
 	Run();
 }
@@ -83,7 +89,7 @@ void rit::SetRun(DigitalIoPin * pin, int count, int pps){
 portBASE_TYPE rit::WaitForStop(TickType_t timeout){
 	return xSemaphoreTake(stop_b, timeout);
 }
-void rit::SetPin(bool value){
+void rit::WritePin(bool value){
 	pin->write(value);
 }
 void rit::init(){
@@ -93,4 +99,10 @@ void rit::init(){
 	// The level must be equal or lower than the maximum priority specified in FreeRTOS config
 	// Note that in a Cortex-M3 a higher number indicates lower interrupt priority
 	NVIC_SetPriority( RITIMER_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
+}
+rit::rit(DigitalIoPin * pin, int pps, int count){
+	rit::init();
+	rit::SetPulsePerSecond(pps);
+	rit::SetPin(pin);
+	rit::SetCount(count);
 }

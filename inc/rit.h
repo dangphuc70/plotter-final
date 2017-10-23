@@ -17,19 +17,28 @@ class rit
 
 		static void StopFromISR(portBASE_TYPE *ptr);
 		static void SetPin(DigitalIoPin * pin);
-		static void SetPin(bool value);
 		static void SetCount(int count);
 		static void SetPulsePerSecond(int pps); // will stop RIT from counting
 		static void Enable();
 		static void Disable();
 		static void Run();
-		static void SetRun(int count, int pps);
+		static void SetRun(int pps, int count);
+		static void SetRun(int count);
 		static void SetRun(DigitalIoPin * pin, int count, int pps);
 		static portBASE_TYPE WaitForStop(TickType_t);
 		static void init();
 
 	public:
+		
 		static void ISR(void);
+
+	public:
+		
+		static void WritePin(bool value);
+
+	public:
+
+		rit(DigitalIoPin * pin, int pps, int count = 0);
 	
 };
 
