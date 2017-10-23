@@ -28,10 +28,11 @@ bool Direction::operator()(){
 
 	direction = dir->read();
 	
-	if(direction)
+	if(direction) {
 		if(lim1->read()) return false;
-	else
+	}else{
 		if(lim0->read()) return false;
+	}
 	return true;
 }
 

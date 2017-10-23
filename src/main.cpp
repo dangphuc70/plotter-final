@@ -47,62 +47,27 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
-class ChangeDetect
-{
-	private:
-
-		bool saved;
-
-	public:
-
-		bool operator()(bool b);
-
-	public:
-
-		ChangeDetect(bool saved_ = false);
-		~ChangeDetect();
-	
-};
-
-ChangeDetect::ChangeDetect(bool saved_) : saved(saved_) {}
-ChangeDetect::~ChangeDetect() {}
-
-bool ChangeDetect::operator()(bool b){
-	if(b != saved){
-		saved = b;
-		return true;
-	}else{
-		return false;
-	}
+void rit_test(int port,
+			  int pin,
+			  DigitalIoPin::pinMode mode,
+			  bool invert,
+			  int count,
+			  int pps){
+	DigitalIoPin * opin = new DigitalIoPin(port, pin, mode, invert);
+	rit::init();
+	rit::SetPin(opin);
+	rit::SetPin(true);
+	rit::SetRun(count, pps);
+	delete opin;
 }
 
-static void a1(void *pvParameters){
-
-	DigitalIoPin * sw1 = new DigitalIoPin(0, 17, DigitalIoPin::pullup, true);
-	DigitalIoPin * sw3 = new DigitalIoPin(1,  9, DigitalIoPin::pullup, true);
-	DigitalIoPin * sw2 = new DigitalIoPin(1, 11, DigitalIoPin::pullup, true);
-	DigitalIoPin * led_step = new DigitalIoPin(0, 25, DigitalIoPin::output,false);
-	DigitalIoPin * led_dir = new DigitalIoPin(0,  3, DigitalIoPin::output, false);
-
-	ChangeDetect changed;
-
-	Axis led_set(sw1, sw3, led_dir, led_step);
-	Direction direction_obj = led_set.DirectionObject();
-	
-	while(1){
-		bool sw = sw2->read();
-		if(changed(sw)){
-			direction_obj(sw);
-			int code = direction_obj.show_code();
-			char itm[30];
-			snprintf(itm, 30, "%d\n", code);
-			ITM_write(itm);
-		}
-	}
+static void rit_test(void *pvParameters){
+	rit_test(0, 25, DigitalIoPin::output, false, 19, 1);
+	vTaskDelay(portMAX_DELAY);
 }
 
 void task_init(){
-	xTaskCreate(a1, "a1", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(rit_test, "rit_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void)
