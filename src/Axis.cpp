@@ -34,21 +34,16 @@ int Axis::operator=(int coordinate_){
 	return coordinate;
 }
 
+bool Axis::delta_check(int delta){
+	int end_coordinate = coordinate + delta;
+	return (end_coordinate >= 0 and end_coordinate <= max);
+}
+
 int Axis::operator+=(int delta){
 	if(delta == 0) return coordinate;
 
-	int end_coordinate = coordinate + delta;
-	if(end_coordinate >= 0 and end_coordinate <= max){
-		coordinate += delta;
-		if(delta > 0){
-			dir->write(Direction::Dir_1);
-		}else{
-			dir->write(Direction::Dir_0);
-			delta = -delta;
-		} // at this point, delta is > 0
-		// toggle step pin from off state
-		step->write(false);
-		rit::SetRun(step, delta + delta - 1);
+	if(delta_check(delta)){
+		increment(delta);
 	}
 	return coordinate;
 }

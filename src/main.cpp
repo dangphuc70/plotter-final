@@ -120,8 +120,18 @@ static void servo_test(void * pvParameters){
 	vTaskDelay(portMAX_DELAY);
 }
 
+static void BresenhamD_test(void * pvParameters){
+	struct BresenhamD raster;
+	raster.init(12357, 1258);
+	do{
+		raster.print();
+		vTaskDelay(1);
+	}while(raster.update());
+	vTaskDelay(portMAX_DELAY);
+}
+
 void task_init(){
-	xTaskCreate(servo_test, "servo_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(BresenhamD_test, "BresenhamD_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){

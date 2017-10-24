@@ -12,7 +12,9 @@ int Servo::set(int level_){
 	}else{
 		level = level_;
 	}
+	pwm.halt();
 	pwm.duty(uint32_t(level));
+	pwm.unhalt();
 	return level;
 }
 

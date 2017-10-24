@@ -29,6 +29,7 @@ class Axis
 		Direction DirectionObject();
 		int operator()();
 		int operator=(int coordinate_);
+		bool delta_check(int delta);
 
 	public:
 
