@@ -70,8 +70,32 @@ static void axis_test(void *pvParameters){
 	vTaskDelay(portMAX_DELAY);
 }
 
+static void limit_verify_test(void *pvParameters){
+	Limit limits(0, 17, 1, 9, 1, 11, 0, 0);
+
+	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
+	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
+
+	Axis led_set(NULL, NULL, red, green, 10000);
+	if(led_set.FindLimit0(limits)){
+		Board_LED_Set(2, true);
+		vTaskDelay(1000);
+		Board_LED_Set(2, false);
+	}
+	if(led_set.FindLimit1(limits)){
+		Board_LED_Set(2, true);
+		vTaskDelay(1000);
+		Board_LED_Set(2, false);
+	}
+
+	rit::SetPulsePerSecond(2);
+	led_set += 5000;
+
+	vTaskDelay(portMAX_DELAY);
+}
+
 void task_init(){
-	xTaskCreate(axis_test, "axis_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(limit_verify_test, "limit_verify_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){

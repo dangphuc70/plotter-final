@@ -1,17 +1,22 @@
 #ifndef LIMIT_H_
 #define LIMIT_H_
 
+#include "FreeRTOS.h"
+#include "queue.h"
 #include "DigitalIoPin.h"
 
 class Limit
 {
 private:
 
-	DigitalIoPin *lim[4];
+	static DigitalIoPin *lim[4];
+
+	static QueueHandle_t lim_q;
 
 public:
 
-	static void ISR(void);
+	static void ISR(int lim_number);
+	static DigitalIoPin * latest_lim();
 	static void disable();
 	static void enable();
 

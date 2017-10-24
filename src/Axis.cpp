@@ -92,27 +92,28 @@ void Axis::decrement(int delta){
 	increment(-delta);
 }
 
-void Axis::VerifyLimit(Limit& lim){
-	// find lim0
-	for(bool found = false; !found; decrement()){
-		for(int i = 0; i < 4; ++i){
-			if(lim(i)){
-				lim0 = lim[i];
-				found = true;
-				break;
-			}
-		}
-	}
+void Axis::free_fall(bool Dir_b){
+	dir->write(Dir_b);
+	rit::SetPulsePerSecond(500);
+	rit::SetPin(step);
+	step->write(false);
+	rit::Run();
+}
 
-	// find lim1
-	for(bool found = false; !found; increment()){
-		for(int i = 0; i < 4; ++i){
-			if(lim(i)){
-				lim1 = lim[i];
-				found = true;
-				break;
-			}
-		}
-	}
-	
+bool Axis::FindLimit0(Limit& lim){
+
+	Limit::latest_lim();
+	free_fall(Direction::Dir_0);
+	lim0 = Limit::latest_lim();
+
+	return lim0 != NULL;
+}
+
+bool Axis::FindLimit1(Limit& lim){
+
+	Limit::latest_lim();
+	free_fall(Direction::Dir_1);
+	lim1 = Limit::latest_lim();
+
+	return lim1 != NULL;
 }

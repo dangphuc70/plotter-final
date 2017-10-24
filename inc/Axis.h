@@ -19,7 +19,8 @@ class Axis
 
 	public:
 
-		void VerifyLimit(Limit&);
+		bool FindLimit0(Limit&);
+		bool FindLimit1(Limit&);
 		Direction DirectionObject();
 		int operator()();
 		int operator=(int coordinate_);
@@ -35,6 +36,7 @@ class Axis
 		void decrement();
 		void increment(int delta);
 		void decrement(int delta);
+		void free_fall(bool Dir_b);
 
 	public:
 

@@ -1,6 +1,9 @@
 #include "Limit.h"
 #include "rit.h"
 
+DigitalIoPin *Limit::lim[4] = {NULL, NULL, NULL, NULL};
+QueueHandle_t Limit::lim_q = xQueueCreate(1, sizeof(DigitalIoPin *));
+
 Limit::Limit(int port0, int pin0,
 	  		 int port1, int pin1,
 	  		 int port2, int pin2,
@@ -33,11 +36,7 @@ Limit::Limit(int port0, int pin0,
 	NVIC_SetPriority(PIN_INT2_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
 	NVIC_SetPriority(PIN_INT3_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1 );
 
-	NVIC_EnableIRQ(PIN_INT0_IRQn);
-	NVIC_EnableIRQ(PIN_INT1_IRQn);
-	NVIC_EnableIRQ(PIN_INT2_IRQn);
-	NVIC_EnableIRQ(PIN_INT3_IRQn);
-
+	Limit::enable();
 }
 
 void Limit::disable(){
@@ -59,6 +58,12 @@ Limit::~Limit(){
 		delete lim[i];
 }
 
+DigitalIoPin * Limit::latest_lim(){
+	DigitalIoPin * back;
+	xQueueReceive(lim_q, &back, 0);
+	return back;
+}
+
 bool Limit::operator()(int index){
 	if(index >= 0 and index < 4){
 		return lim[index]->read();
@@ -74,9 +79,14 @@ DigitalIoPin * Limit::operator[](int index){
 	}
 }
 
-void Limit::ISR(void){
+void Limit::ISR(int lim_number){
 	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
+	
+	DigitalIoPin * send = Limit::lim[lim_number];
+	
 	rit::StopFromISR(&xHigherPriorityWoken);
+	xQueueSendFromISR(lim_q, &send , &xHigherPriorityWoken);
+	
 	portEND_SWITCHING_ISR(xHigherPriorityWoken);
 }
 
@@ -84,20 +94,24 @@ extern "C"
 {
 // Limit x1 IRQ Handler
 void PIN_INT0_IRQHandler(void) {
-	Limit::ISR();
+	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH0);
+	Limit::ISR(0);
 }
 // Limit x2 IRQ Handler
 void PIN_INT1_IRQHandler(void) {
-	Limit::ISR();
+	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH1);
+	Limit::ISR(1);
 }
 
 // Limit y1 IRQ Handler
 void PIN_INT2_IRQHandler(void) {
-	Limit::ISR();
+	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH2);
+	Limit::ISR(2);
 }
 
 // Limit y2 IRQ Handler
 void PIN_INT3_IRQHandler(void) {
-	Limit::ISR();
+	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH3);
+	Limit::ISR(3);
 }
 }
