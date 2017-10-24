@@ -22,16 +22,19 @@ class Axis
 		void VerifyLimit(Limit&);
 		Direction DirectionObject();
 		int operator()();
+		int operator=(int coordinate_);
 
 	public:
 
 		int operator+=(int delta);
 		int operator-=(int delta);
 
-	public:
+	public: // all unchecked against max (value)
 
 		void increment();
 		void decrement();
+		void increment(int delta);
+		void decrement(int delta);
 
 	public:
 

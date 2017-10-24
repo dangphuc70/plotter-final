@@ -28,7 +28,15 @@ int Axis::operator()(){
 	return coordinate;
 }
 
+int Axis::operator=(int coordinate_){
+	if(coordinate_ >= 0)
+		coordinate = coordinate_;
+	return coordinate;
+}
+
 int Axis::operator+=(int delta){
+	if(delta == 0) return coordinate;
+
 	int end_coordinate = coordinate + delta;
 	if(end_coordinate >= 0 and end_coordinate <= max){
 		coordinate += delta;
@@ -45,8 +53,7 @@ int Axis::operator+=(int delta){
 	return coordinate;
 }
 int Axis::operator-=(int delta){
-	operator+=(-delta);
-	return coordinate;
+	return operator+=(-delta);
 }
 
 
@@ -55,11 +62,34 @@ void Axis::increment(){
 	dir->write(Direction::Dir_1);
 	step->write(false);
 	rit::SetRun(step, 1);
+	coordinate++;
 }
 void Axis::decrement(){
 	dir->write(Direction::Dir_0);
 	step->write(false);
 	rit::SetRun(step, 1);
+	coordinate--;
+}
+
+void Axis::increment(int delta){
+	if(delta == 0) return;
+
+	int nstep;
+	if(delta > 0){
+		dir->write(Direction::Dir_1);
+		nstep = delta;
+	}else{
+		dir->write(Direction::Dir_0);
+		nstep = -delta;
+	}
+
+	step->write(false);
+	rit::SetRun(step, nstep + nstep - 1);
+	coordinate += delta;
+}
+
+void Axis::decrement(int delta){
+	increment(-delta);
 }
 
 void Axis::VerifyLimit(Limit& lim){

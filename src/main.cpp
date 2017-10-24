@@ -53,15 +53,17 @@ static void axis_test(void *pvParameters){
 	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
 	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
 
-	Axis led_set(sw1, sw3, red, green, 10, 5);
+	Axis led_set(sw1, sw3, red, green, 10000);
 
-	green->write(true);
+	green->write(false);
 
 	// driving essential
-	rit stepper(green, 1);
+	rit stepper(green, 10000);
 
+	Board_LED_Set(0, false);
 	Board_LED_Set(2, false);
-	if((led_set -= 5) == 5){
+	led_set.increment(10001);
+	if(led_set() > 10000){
 		Board_LED_Set(2, true);
 	}
 

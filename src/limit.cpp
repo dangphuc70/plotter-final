@@ -40,6 +40,20 @@ Limit::Limit(int port0, int pin0,
 
 }
 
+void Limit::disable(){
+	NVIC_DisableIRQ(PIN_INT0_IRQn);
+	NVIC_DisableIRQ(PIN_INT1_IRQn);
+	NVIC_DisableIRQ(PIN_INT2_IRQn);
+	NVIC_DisableIRQ(PIN_INT3_IRQn);
+}
+
+void Limit::enable(){
+	NVIC_EnableIRQ(PIN_INT0_IRQn);
+	NVIC_EnableIRQ(PIN_INT1_IRQn);
+	NVIC_EnableIRQ(PIN_INT2_IRQn);
+	NVIC_EnableIRQ(PIN_INT3_IRQn);
+}
+
 Limit::~Limit(){
 	for(int i = 0; i < 4; ++i)
 		delete lim[i];

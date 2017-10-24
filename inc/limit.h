@@ -12,6 +12,8 @@ private:
 public:
 
 	static void ISR(void);
+	static void disable();
+	static void enable();
 
 public:
 
