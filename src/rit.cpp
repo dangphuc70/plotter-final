@@ -88,7 +88,7 @@ void rit::SetRun(int count){
 	SetCount(count);
 	Run();
 }
-void rit::SetRun(DigitalIoPin * pin, int count, int pps){
+void rit::SetRun(DigitalIoPin * pin, int pps, int count){
 	SetPulsePerSecond(pps);
 	SetCount(count);
 	SetPin(pin);

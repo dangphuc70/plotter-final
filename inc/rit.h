@@ -40,7 +40,7 @@ class rit
 
 		static void SetRun(int pps, int count);
 		static void SetRun(int count);
-		static void SetRun(DigitalIoPin * pin, int count, int pps);
+		static void SetRun(DigitalIoPin * pin, int pps, int count);
 		static void SetRun(DigitalIoPin * pin, int count);
 		
 	public:

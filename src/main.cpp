@@ -71,24 +71,25 @@ static void axis_test(void *pvParameters){
 }
 
 static void limit_verify_test(void *pvParameters){
-	Limit limits(0, 17, 1, 9, 1, 11, 0, 0);
+	// these 2 lines are ESSENTIAL
+	Limit limits(0, 17, 1, 9, 1, 3, 0, 0);
+	rit RIT(NULL, 2);
 
 	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
 	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
 
 	Axis led_set(NULL, NULL, red, green, 10000);
-	if(led_set.FindLimit0(limits)){
-		Board_LED_Set(2, true);
-		vTaskDelay(1000);
-		Board_LED_Set(2, false);
-	}
-	if(led_set.FindLimit1(limits)){
-		Board_LED_Set(2, true);
-		vTaskDelay(1000);
-		Board_LED_Set(2, false);
-	}
+	 if(led_set.FindLimit0(limits, 2)){
+	 	Board_LED_Set(2, true);
+	 	vTaskDelay(1000);
+	 	Board_LED_Set(2, false);
+	 }
+	 if(led_set.FindLimit1(limits, 2)){
+	 	Board_LED_Set(2, true);
+	 	vTaskDelay(1000);
+	 	Board_LED_Set(2, false);
+	 }
 
-	rit::SetPulsePerSecond(2);
 	led_set += 5000;
 
 	vTaskDelay(portMAX_DELAY);

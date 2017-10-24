@@ -92,27 +92,39 @@ void Axis::decrement(int delta){
 	increment(-delta);
 }
 
-void Axis::free_fall(bool Dir_b){
+void Axis::free_fall(bool Dir_b, int pps){
 	dir->write(Dir_b);
-	rit::SetPulsePerSecond(500);
-	rit::SetPin(step);
 	step->write(false);
-	rit::Run();
+	rit::SetRun(step, pps, 100000);
+}
+
+void Axis::free_fall(bool Dir_b){
+	free_fall(Dir_b, 50);
 }
 
 bool Axis::FindLimit0(Limit& lim){
 
+	return FindLimit0(lim, 200);
+}
+
+bool Axis::FindLimit1(Limit& lim){
+
+	return FindLimit1(lim, 200);
+}
+
+bool Axis::FindLimit0(Limit& lim, int pps){
+
 	Limit::latest_lim();
-	free_fall(Direction::Dir_0);
+	free_fall(Direction::Dir_0, pps);
 	lim0 = Limit::latest_lim();
 
 	return lim0 != NULL;
 }
 
-bool Axis::FindLimit1(Limit& lim){
+bool Axis::FindLimit1(Limit& lim, int pps){
 
 	Limit::latest_lim();
-	free_fall(Direction::Dir_1);
+	free_fall(Direction::Dir_1, pps);
 	lim1 = Limit::latest_lim();
 
 	return lim1 != NULL;
