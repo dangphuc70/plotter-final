@@ -23,6 +23,9 @@ class Axis
 		bool FindLimit1(Limit&);
 		bool FindLimit0(Limit&, int pps);
 		bool FindLimit1(Limit&, int pps);
+
+	public:
+		
 		Direction DirectionObject();
 		int operator()();
 		int operator=(int coordinate_);

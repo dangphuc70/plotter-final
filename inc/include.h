@@ -3,3 +3,5 @@
 #include "rit.h"
 #include "Axis.h"
 #include "limit.h"
+#include "PWM.h"
+#include "Servo.h"

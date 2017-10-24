@@ -79,24 +79,49 @@ static void limit_verify_test(void *pvParameters){
 	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
 
 	Axis led_set(NULL, NULL, red, green, 10000);
-	 if(led_set.FindLimit0(limits, 2)){
-	 	Board_LED_Set(2, true);
-	 	vTaskDelay(1000);
-	 	Board_LED_Set(2, false);
-	 }
-	 if(led_set.FindLimit1(limits, 2)){
-	 	Board_LED_Set(2, true);
-	 	vTaskDelay(1000);
-	 	Board_LED_Set(2, false);
-	 }
+	
+	if(led_set.FindLimit0(limits, 2)){
+		
+		Board_LED_Set(2, true);
+		vTaskDelay(1000);
+		Board_LED_Set(2, false);
+
+	}
+	if(led_set.FindLimit1(limits, 2)){
+		
+		Board_LED_Set(2, true);
+		vTaskDelay(1000);
+		Board_LED_Set(2, false);
+
+	}
 
 	led_set += 5000;
 
 	vTaskDelay(portMAX_DELAY);
 }
 
+static void pwm_test(void * pvParameters){
+	DigitalIoPin red(0, 25, DigitalIoPin::output);
+	PWM large(LPC_SCTLARGE0,
+			  0, 25,
+			  Chip_Clock_GetSystemClockRate(),
+			  Chip_Clock_GetSystemClockRate());
+	large = 0.5;
+	large.unhalt();
+
+	vTaskDelay(portMAX_DELAY);
+}
+
+static void servo_test(void * pvParameters){
+	DigitalIoPin red(0, 25, DigitalIoPin::output);
+	Servo servo(LPC_SCTLARGE0, 0, 25);
+	servo.start();
+
+	vTaskDelay(portMAX_DELAY);
+}
+
 void task_init(){
-	xTaskCreate(limit_verify_test, "limit_verify_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(servo_test, "servo_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){
