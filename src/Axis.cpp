@@ -107,6 +107,10 @@ bool Axis::FindLimit1(Limit& lim){
 	return FindLimit1(lim, 200);
 }
 
+
+// redo these two
+// step 1 : disable limits
+// step 2 : drive 1 step in one direction, check all limits, loop until one hits
 bool Axis::FindLimit0(Limit& lim, int pps){
 
 	Limit::latest_lim();

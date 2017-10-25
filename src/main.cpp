@@ -72,22 +72,15 @@ static void axis_test(void *pvParameters){
 
 static void limit_verify_test(void *pvParameters){
 	// these 2 lines are ESSENTIAL
-	Limit limits(0, 17, 1, 9, 1, 3, 0, 0);
-	rit RIT(NULL, 2);
+	Limit limits(0, 17, 1, 9, 0, 27, 0, 28);
+	rit RIT(NULL, 100);
 
-	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
-	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
+	DigitalIoPin * dir   = new DigitalIoPin(1,  0, DigitalIoPin::output);
+	DigitalIoPin * step = new DigitalIoPin(0, 24, DigitalIoPin::output);
 
-	Axis led_set(NULL, NULL, red, green, 10000);
+	Axis led_set(NULL, NULL, dir, step, 10000);
 	
-	if(led_set.FindLimit0(limits, 2)){
-		
-		Board_LED_Set(2, true);
-		vTaskDelay(1000);
-		Board_LED_Set(2, false);
-
-	}
-	if(led_set.FindLimit1(limits, 2)){
+	if(led_set.FindLimit0(limits, 200)){
 		
 		Board_LED_Set(2, true);
 		vTaskDelay(1000);
@@ -95,7 +88,21 @@ static void limit_verify_test(void *pvParameters){
 
 	}
 
-	led_set += 5000;
+	Limit::disable();
+	led_set += 40;
+	Limit::enable();
+
+	if(led_set.FindLimit1(limits, 200)){
+		
+		Board_LED_Set(2, true);
+		vTaskDelay(1000);
+		Board_LED_Set(2, false);
+
+	}
+
+	Limit::disable();
+	led_set -= 40;
+	Limit::enable();
 
 	vTaskDelay(portMAX_DELAY);
 }
@@ -132,7 +139,7 @@ static void BresenhamD_test(void * pvParameters){
 }
 
 void task_init(){
-	xTaskCreate(servo_test, "servo_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(limit_verify_test, "limit_verify_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){
