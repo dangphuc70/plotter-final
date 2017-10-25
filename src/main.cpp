@@ -53,19 +53,17 @@ static void axis_test(void *pvParameters){
 	DigitalIoPin * red   = new DigitalIoPin(0, 25, DigitalIoPin::output);
 	DigitalIoPin * green = new DigitalIoPin(0,  3, DigitalIoPin::output);
 
-	Axis led_set(sw1, sw3, red, green, 10000);
+	Axis * led_set = new Axis(sw1, sw3, red, green, 10000);
 
 	green->write(false);
 
 	// driving essential
-	rit stepper(green, 10000);
+	rit stepper(green, 2);
 
 	Board_LED_Set(0, false);
 	Board_LED_Set(2, false);
-	led_set.increment(10001);
-	if(led_set() > 10000){
-		Board_LED_Set(2, true);
-	}
+	
+	(*led_set) += 5000;
 
 	vTaskDelay(portMAX_DELAY);
 }
@@ -130,16 +128,36 @@ static void servo_test(void * pvParameters){
 
 static void BresenhamD_test(void * pvParameters){
 	struct BresenhamD raster;
-	raster.init(12357, 1258);
-	do{
-		raster.print();
-		vTaskDelay(1);
-	}while(raster.update());
+
+	rit RIT(NULL, 8000);
+	Limit limits(0, 29, 0, 9, 1, 3, 0, 0);
+
+	DigitalIoPin * dir_y = new DigitalIoPin(0, 28, DigitalIoPin::output);
+	DigitalIoPin * dir_x = new DigitalIoPin(1, 0, DigitalIoPin::output);
+	DigitalIoPin * step_y = new DigitalIoPin(0, 27, DigitalIoPin::output);
+	DigitalIoPin * step_x = new DigitalIoPin(0, 24, DigitalIoPin::output);
+	
+	Axis * x = new Axis(limits[0], limits[1], dir_x, step_x, 10000, 5000);
+	Axis * y = new Axis(limits[2], limits[3], dir_y, step_y, 10000, 5000);
+
+	raster.init(x, 1, y, -1);
+	raster.init(4000, 3000);
+	raster.init();
+
+	Servo servo(LPC_SCTLARGE0, 0, 10);
+
+	servo = 0.0;
+
+	servo = 0.405;
+
+	//while(raster.update());
+
+
 	vTaskDelay(portMAX_DELAY);
 }
 
 void task_init(){
-	xTaskCreate(limit_verify_test, "limit_verify_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(BresenhamD_test, "BresenhamD_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){

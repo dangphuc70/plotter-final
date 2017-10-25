@@ -67,7 +67,8 @@ void Axis::decrement(){
 }
 
 void Axis::increment(int delta){
-	if(delta == 0) return;
+	if(delta == 0)
+		return;
 
 	int nstep;
 	if(delta > 0){

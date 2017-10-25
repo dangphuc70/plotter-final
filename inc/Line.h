@@ -6,15 +6,6 @@
 #include <cstdio>
 #include "ITM_write.h"
 
-class Line
-{
-
-public:
-
-	Line();
-	~Line();
-	
-};
 
 struct BresenhamD {
 	int D;
@@ -22,8 +13,13 @@ struct BresenhamD {
 	int dy;
 	int x;
 	int y;
+	int inc_x;
+	int inc_y;
 	int updateless;
 	int updatemore;
+
+	Axis * b;
+	Axis * o;
 
 	void init(){
 		y = 0;
@@ -41,6 +37,18 @@ struct BresenhamD {
 			dx = dy;
 			dy = t;
 		}
+	}
+
+	void init(Axis * bb, int ix, Axis * oo, int iy){
+		b = bb;
+		o = oo;
+		inc_x = ix;
+		inc_y = iy;
+	}
+
+	void init(Axis * bb, Axis * oo, int ddx, int ddy){
+		init(bb, 1, oo, 1);
+		init(ddx, ddy);
 		init();
 	}
 
@@ -48,12 +56,13 @@ struct BresenhamD {
 		if(x >= dx){
 			return false;
 		}else{
-			x = x + 1;
+			x += 1;
+			(*b) += inc_x;
 			if(D < 0){
 				D = D + updateless;
 			}else{
 				D = D + updatemore;
-				y = y + 1;
+				(*o) += inc_y;
 			}
 			return true;
 		}
