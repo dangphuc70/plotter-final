@@ -113,9 +113,10 @@ static void pwm_test(void * pvParameters){
 }
 
 static void servo_test(void * pvParameters){
-	DigitalIoPin red(0, 25, DigitalIoPin::output);
-	Servo servo(LPC_SCTLARGE0, 0, 25);
-	servo.start();
+	DigitalIoPin red(0, 8, DigitalIoPin::output);
+	Servo servo(LPC_SCTLARGE0, 0, 8);
+	
+	servo.set_duty(Chip_Clock_GetSystemClockRate() / 500);
 
 	vTaskDelay(portMAX_DELAY);
 }
@@ -131,7 +132,7 @@ static void BresenhamD_test(void * pvParameters){
 }
 
 void task_init(){
-	xTaskCreate(BresenhamD_test, "BresenhamD_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
+	xTaskCreate(servo_test, "servo_test", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 1UL, NULL);
 }
 
 int main(void){

@@ -5,12 +5,16 @@
 
 class Servo
 {
-public:
+public: // arguments are in degree for int and fraction in double
 	
 	int operator+=(int);
 	int operator+=(double);
 	int operator=(int);
 	int operator=(double);
+
+public:
+
+	void set_duty(uint32_t);
 
 private:
 

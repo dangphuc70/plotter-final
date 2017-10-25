@@ -34,7 +34,7 @@ Servo::Servo(LPC_SCT_T * lpc_sct,
 	min = x1ms;
 	max = 2 * x1ms;
 	dif = max - min;
-	x1d = dif / 180;
+	x1d = dif / 90;
 
 	uint32_t mid = min + (dif / 2);
 
@@ -75,4 +75,8 @@ int Servo::operator=(double fraction){
 
 int Servo::degree(){
 	return (level - min) / x1d;
+}
+
+void Servo::set_duty(uint32_t n){
+	set(n);
 }
