@@ -15,8 +15,7 @@ private:
 
 public:
 
-	static void ISR(int lim_number);
-	static DigitalIoPin * latest_lim();
+	static void ISR();
 	static void disable();
 	static void enable();
 

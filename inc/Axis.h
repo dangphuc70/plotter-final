@@ -15,7 +15,6 @@ class Axis
 		DigitalIoPin * lim0;
 		DigitalIoPin * lim1;
 		int coordinate;
-		int max;
 
 	private:
 
@@ -33,13 +32,16 @@ class Axis
 		bool FindLimit1(Limit&);
 		bool FindLimit0(Limit&, int pps);
 		bool FindLimit1(Limit&, int pps);
+		void SetLim0(DigitalIoPin * l0);
+		void SetLim1(DigitalIoPin * l1);
+		void SetDir(DigitalIoPin * d);
+		void SetStep(DigitalIoPin * s);
 
 	public:
 		
 		Direction DirectionObject();
 		int operator()();
 		int operator=(int coordinate_);
-		bool delta_check(int delta);
 
 	public:
 
@@ -52,16 +54,13 @@ class Axis
 		void decrement();
 		void increment(int delta);
 		void decrement(int delta);
-		void free_fall(bool Dir_b);
-		void free_fall(bool Dir_b, int pps);
 
 	public:
 
-		Axis(DigitalIoPin * lim0_,
-			 DigitalIoPin * lim1_,
-			 DigitalIoPin * dir_,
-			 DigitalIoPin * step_,
-			 int max_,
+		Axis(DigitalIoPin * lim0_ = NULL,
+			 DigitalIoPin * lim1_ = NULL,
+			 DigitalIoPin * dir_ = NULL,
+			 DigitalIoPin * step_ = NULL,
 			 int coordinate_ = 0);
 		~Axis();
 	

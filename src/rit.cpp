@@ -37,7 +37,7 @@ void rit::give(){
 }
 
 void rit::StopFromISR(portBASE_TYPE *ptr){
-	Chip_RIT_Enable(LPC_RITIMER);
+	Disable();
 	xSemaphoreGiveFromISR(stop_b, ptr);
 }
 void rit::SetPin(DigitalIoPin * pin){
@@ -64,17 +64,18 @@ void rit::SetPulsePerSecond(int pps){
 }
 void rit::Enable(){
 	Chip_RIT_Enable(LPC_RITIMER);
+	NVIC_EnableIRQ(RITIMER_IRQn);
 }
 void rit::Disable(){
+	NVIC_DisableIRQ(RITIMER_IRQn);
 	Chip_RIT_Disable(LPC_RITIMER);
 }
 void rit::Run(){
-	Chip_RIT_Enable(LPC_RITIMER);
-	NVIC_EnableIRQ(RITIMER_IRQn);
+	Enable();
 
 	// wait for stop
 	if(WaitForStop(portMAX_DELAY)){
-		NVIC_DisableIRQ(RITIMER_IRQn);
+		Disable();
 	}
 }
 void rit::SetRun(int pps, int count){
