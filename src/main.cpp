@@ -229,6 +229,7 @@ void task_init(){
 	 	xTaskCreate(cdc_task, "CDC",
 	 					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
 	 					(TaskHandle_t *) &xTaskCDCHandle);
+	// needs join memory - 16_32k
 }
 
 int main(void){
