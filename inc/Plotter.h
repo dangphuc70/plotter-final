@@ -23,6 +23,7 @@ public:
 	void operator()(int dx, int dy);
 	void pen(int degree);
 	void home();
+	void reset();
 
 public:
 

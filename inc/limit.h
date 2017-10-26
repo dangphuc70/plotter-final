@@ -11,8 +11,6 @@ private:
 
 	static DigitalIoPin *lim[4];
 
-	static QueueHandle_t lim_q;
-
 public:
 
 	static void ISR();

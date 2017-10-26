@@ -38,7 +38,7 @@ Plotter::Plotter(int portlim0, int pinlim0,
 
 	servo = 20;
 
-	rit RIT_init(NULL, 8000);
+	rit RIT_init(NULL, 1000);
 }
 
 Plotter::~Plotter(){
@@ -110,4 +110,18 @@ void Plotter:: pen(int degree){
 void Plotter::home(){
 	x += -x();
 	y += -y();
+}
+
+void Plotter::reset(){
+	// information reset, assume pins and servo are functional and properly set
+	x = 0;
+	y = 0;
+	servo = 20;
+
+	// hardware reset
+	rit::poweroff();
+	rit::poweron();
+
+	rit RIT_init(NULL, 1000);
+
 }

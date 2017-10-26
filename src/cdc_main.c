@@ -42,6 +42,8 @@
 #include "ITM_write.h"
 #include "user_vcom.h"
 
+#include "event_groups.h"
+
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
@@ -140,6 +142,7 @@ USB_INTERFACE_DESCRIPTOR *find_IntfDesc(const uint8_t *pDesc, uint32_t intfClass
 	return pIntfDesc;
 }
 
+extern EventGroupHandle_t cdc_sync;
 /**
  * @brief	main routine for blinky example
  * @return	Function should not exit.
@@ -235,7 +238,9 @@ void cdc_task(void *pvParameters)
 
 	ITM_write("Connected\r\n");
 
-	//put here sunc point
+	xEventGroupSetBits( cdc_sync,
+						(1 << 0) );
+
 
 	while (1) {
 		/* try allocate receive buffer if we have none */
