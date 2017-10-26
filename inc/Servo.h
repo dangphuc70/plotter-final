@@ -16,9 +16,6 @@ public:
 
 	void set_duty(uint32_t);
 
-private:
-
-	int degree();
 
 private:
 
@@ -46,8 +43,12 @@ public:
 	
 private:
 
-	static uint32_t x1ms;
-	static uint32_t x1d;
+	static uint32_t t_1ms;
+	static uint32_t t_1d;
+
+private:
+
+	int degree();
 };
 
 #endif

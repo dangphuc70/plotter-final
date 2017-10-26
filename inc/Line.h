@@ -7,73 +7,81 @@
 #include "ITM_write.h"
 
 
-struct BresenhamD {
+class BresenhamD {
+
+// geometry
+	int ib;
+	int io;
+	Axis * ab;
+	Axis * ao;
+
+
+// algorithm
 	int D;
-	int dx;
-	int dy;
-	int x;
-	int y;
-	int inc_x;
-	int inc_y;
 	int updateless;
 	int updatemore;
+	int i;
+	int time;
 
-	Axis * b;
-	Axis * o;
+public:
+	BresenhamD(Axis * base, Axis * other,
+			   int distance_base, int distance_other){
+		ab = base;
+		ao = other;
 
-	void init(){
-		y = 0;
-		x = 0;
-		updateless = dy + dy;
-		updatemore = updateless - dx - dx;
-		D = updatemore + dx;
-	}
-
-	void init(int ddx, int ddy){
-		dx = abs(ddx);
-		dy = abs(ddy);
-		if(dx < dy){
-			int t = dx;
-			dx = dy;
-			dy = t;
+		if(distance_base < 0){
+			distance_base = -distance_base;
+			ib = -1;
+		}else{
+			ib = 1;
 		}
+
+		if(distance_other < 0){
+			distance_other = -distance_other;
+			io = -1;
+		}else{
+			io = 1;
+		}
+
+		updateless = 2 * distance_other;
+		updatemore = updateless - 2 * distance_base;
+
+		D = updatemore + distance_base;
+
+		i = 0;
+		time = distance_base;
 	}
 
-	void init(Axis * bb, int ix, Axis * oo, int iy){
-		b = bb;
-		o = oo;
-		inc_x = ix;
-		inc_y = iy;
+public:
+
+	void operator()(){
+		while(update());
 	}
 
-	void init(Axis * bb, Axis * oo, int ddx, int ddy){
-		init(bb, 1, oo, 1);
-		init(ddx, ddy);
-		init();
+	void operator()(int times){
+		i = 0;
+		time = times;
+		while(update());
 	}
+
+public:
 
 	bool update(){
-		if(x >= dx){
+		if(i >= time){ // algorithm
 			return false;
 		}else{
-			x += 1;
-			(*b) += inc_x;
+			i += 1; // algorithm
+			(*ab) += ib; // geometry
 			if(D < 0){
 				D = D + updateless;
 			}else{
+				(*ao) += io; // geometry
 				D = D + updatemore;
-				(*o) += inc_y;
 			}
 			return true;
 		}
 	}
 
-	void print(){
-		static char space[40];
-		snprintf(space, 40,
-				 "%10d %10d %10d\n", D, y, x);
-		ITM_write(space);
-	}
 };
 
 #endif

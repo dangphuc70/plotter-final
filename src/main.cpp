@@ -127,8 +127,6 @@ static void servo_test(void * pvParameters){
 }
 
 static void BresenhamD_test(void * pvParameters){
-	struct BresenhamD raster;
-
 	rit RIT(NULL, 8000);
 	Limit limits(0, 29, 0, 9, 1, 3, 0, 0);
 
@@ -140,17 +138,19 @@ static void BresenhamD_test(void * pvParameters){
 	Axis * x = new Axis(limits[0], limits[1], dir_x, step_x, 10000, 5000);
 	Axis * y = new Axis(limits[2], limits[3], dir_y, step_y, 10000, 5000);
 
-	raster.init(x, 1, y, -1);
-	raster.init(4000, 3000);
-	raster.init();
-
 	Servo servo(LPC_SCTLARGE0, 0, 10);
 
-	servo = 0.0;
+	servo = 45;
 
-	servo = 0.405;
+	servo = 36;
 
-	//while(raster.update());
+	BresenhamD aline(x, y, 5, 4);
+	aline();
+
+	BresenhamD back(x, y, -5, -4);
+	back(2);
+	vTaskDelay(1000);
+	back(3);
 
 
 	vTaskDelay(portMAX_DELAY);

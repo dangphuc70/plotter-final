@@ -1,7 +1,7 @@
 #include "Servo.h"
 
-uint32_t Servo::x1ms = Chip_Clock_GetSystemClockRate() / 1000;
-uint32_t Servo::x1d;
+uint32_t Servo::t_1ms = Chip_Clock_GetSystemClockRate() / 1000;
+uint32_t Servo::t_1d;
 
 int Servo::set(int level_){
 	if(level_ > max){
@@ -29,12 +29,13 @@ Servo::Servo(LPC_SCT_T * lpc_sct,
 	: pwm(lpc_sct,
 		  port,
 		  pin){
-	uint32_t period = 20 * x1ms;
+	uint32_t period = 20 * t_1ms;
 
-	min = x1ms;
-	max = 2 * x1ms;
+	min = t_1ms;
+	max = 2 * t_1ms;
 	dif = max - min;
-	x1d = dif / 90;
+	
+	t_1d = dif / 90;
 
 	uint32_t mid = min + (dif / 2);
 
@@ -56,7 +57,7 @@ void Servo::stop(){
 }
 
 int Servo::operator+=(int deg){
-	return operator=(int(level + (min + deg * x1d)));
+	return operator=(int(level + (min + deg * t_1d)));
 }
 
 int Servo::operator+=(double fraction){
@@ -64,7 +65,7 @@ int Servo::operator+=(double fraction){
 }
 
 int Servo::operator=(int deg){
-	set(int(min + deg * x1d));
+	set(int(min + deg * t_1d));
 	return degree();
 }
 
@@ -74,7 +75,7 @@ int Servo::operator=(double fraction){
 }
 
 int Servo::degree(){
-	return (level - min) / x1d;
+	return (level - min) / t_1d;
 }
 
 void Servo::set_duty(uint32_t n){

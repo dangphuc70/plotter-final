@@ -17,6 +17,16 @@ class Axis
 		int coordinate;
 		int max;
 
+	private:
+
+		double mmStepVar;
+
+	public:
+
+		int mmToStep(double mm);
+		double stepToMm(int n);
+		void mmStep(int nstep, double mm);
+
 	public:
 
 		bool FindLimit0(Limit&);

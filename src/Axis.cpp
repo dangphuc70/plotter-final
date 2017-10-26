@@ -129,3 +129,16 @@ bool Axis::FindLimit1(Limit& lim, int pps){
 
 	return lim1 != NULL;
 }
+
+
+int Axis::mmToStep(double mm){
+	return mm / mmStepVar;
+}
+
+double Axis::stepToMm(int n){
+	return n * mmStepVar;
+}
+
+void Axis::mmStep(int nstep, double mm){
+	mmStepVar = mm / nstep;
+}
