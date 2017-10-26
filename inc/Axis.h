@@ -39,7 +39,6 @@ class Axis
 
 	public:
 		
-		Direction DirectionObject();
 		int operator()();
 		int operator=(int coordinate_);
 

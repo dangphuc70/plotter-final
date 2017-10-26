@@ -18,9 +18,6 @@ Axis::~Axis(){
 
 }
 
-Direction Axis::DirectionObject(){
-	return Direction(lim0, lim1, dir);
-}
 
 int Axis::operator()(){
 	return coordinate;
