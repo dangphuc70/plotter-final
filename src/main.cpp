@@ -181,11 +181,11 @@ static void receive_task(void *pvParameters)
 
 static void task(void *pvParameters){
 
-	xEventGroupWaitBits( io_sync,
-						 (1 << 0),
-						 pdFALSE,
-						 pdTRUE,
-						 portMAX_DELAY);
+//	xEventGroupWaitBits( io_sync,
+//						 (1 << 0),
+//						 pdFALSE,
+//						 pdTRUE,
+//						 portMAX_DELAY);
 	
 	UniversalClass::Task task;
 
@@ -205,19 +205,18 @@ static void task(void *pvParameters){
 		}else if(task._Task == UniversalClass::RESET){
 			plot.reset();
 		}
-		vTaskDelay(1);
 	}
 }
 
 void task_init(){
 	xTaskCreate(task, "task", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 2UL, NULL);
-	xTaskCreate(receive_task, "Rx",
-					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-					(TaskHandle_t *) NULL);
+	// xTaskCreate(receive_task, "Rx",
+	// 				configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
+	// 				(TaskHandle_t *) NULL);
 
-		xTaskCreate(cdc_task, "CDC",
-						configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-						(TaskHandle_t *) &xTaskCDCHandle);
+	// 	xTaskCreate(cdc_task, "CDC",
+	// 					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
+	// 					(TaskHandle_t *) &xTaskCDCHandle);
 }
 
 int main(void){
