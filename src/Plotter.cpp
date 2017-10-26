@@ -72,16 +72,17 @@ void Plotter::operator()(int dx, int dy){
 		line();
 	}else{
 		int d = 500;
-		int a = d / 3;
-		int t = f - d;
-		int a1 = a / 3;
+		int a1 = d / 3;
 		int a2 = 2 * a1;
-		int a3 = a - (a1 + a2);
+		int a3 = d - (a1 + a2);
+
+		int t = f - d;
+
 		rit::SetPulsePerSecond(2000);
 		line(a1);
 		rit::SetPulsePerSecond(4000);
 		line(a2);
-		rit::SetPulsePerSecond(7000);
+		rit::SetPulsePerSecond(6000);
 		line(a3);
 		rit::SetPulsePerSecond(8000);
 		line(t);
