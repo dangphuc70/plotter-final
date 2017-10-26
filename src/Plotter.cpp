@@ -125,3 +125,11 @@ void Plotter::reset(){
 	rit RIT_init(NULL, 1000);
 
 }
+
+void Plotter::safety(bool on){
+	if(on){
+		Limit::enable();
+	}else{
+		Limit::disable();
+	}
+}

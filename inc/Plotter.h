@@ -27,6 +27,10 @@ public:
 
 public:
 
+	void safety(bool on);
+	
+public:
+
 	Plotter(int portlim0, int pinlim0,
 			int portlim1, int pinlim1,
 			int portlim2, int pinlim2,

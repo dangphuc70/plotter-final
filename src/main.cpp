@@ -132,9 +132,17 @@ void CreateAndSendTask(char* line, int len)
 		{
 			t._Task = UniversalClass::G28;
 		}
-		else if (strcmp(commands[i].c_str(), "RESET") == 0)
+		else if (commands[i][0] == 'R' && commands[i][1] == 'S')
 		{
 			t._Task = UniversalClass::RESET;
+		}
+		else if (commands[i][0] == 'D' && commands[i][1] == 'S')
+		{
+			t._Task = UniversalClass::DISABLE_LIMIT_SAFETY;
+		}
+		else if (commands[i][0] == 'E' && commands[i][1] == 'N')
+		{
+			t._Task = UniversalClass::ENABLE_LIMIT_SAFETY;
 		}
 		else
 		{
@@ -181,11 +189,11 @@ static void receive_task(void *pvParameters)
 
 static void task(void *pvParameters){
 
-//	xEventGroupWaitBits( io_sync,
-//						 (1 << 0),
-//						 pdFALSE,
-//						 pdTRUE,
-//						 portMAX_DELAY);
+	xEventGroupWaitBits( io_sync,
+						 (1 << 0),
+						 pdFALSE,
+						 pdTRUE,
+						 portMAX_DELAY);
 	
 	UniversalClass::Task task;
 
@@ -204,19 +212,23 @@ static void task(void *pvParameters){
 			plot.home();
 		}else if(task._Task == UniversalClass::RESET){
 			plot.reset();
+		}else if(task._Task == UniversalClass::DISABLE_LIMIT_SAFETY){
+			plot.safety(false);
+		}else if(task._Task == UniversalClass::ENABLE_LIMIT_SAFETY){
+			plot.safety(true);
 		}
 	}
 }
 
 void task_init(){
 	xTaskCreate(task, "task", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 2UL, NULL);
-	// xTaskCreate(receive_task, "Rx",
-	// 				configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-	// 				(TaskHandle_t *) NULL);
+	 xTaskCreate(receive_task, "Rx",
+	 				configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
+	 				(TaskHandle_t *) NULL);
 
-	// 	xTaskCreate(cdc_task, "CDC",
-	// 					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-	// 					(TaskHandle_t *) &xTaskCDCHandle);
+	 	xTaskCreate(cdc_task, "CDC",
+	 					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
+	 					(TaskHandle_t *) &xTaskCDCHandle);
 }
 
 int main(void){
