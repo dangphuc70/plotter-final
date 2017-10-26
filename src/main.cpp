@@ -189,7 +189,7 @@ static void task(void *pvParameters){
 	
 	UniversalClass::Task task;
 
-	Plotter plot(0, 29, 0, 9, 1, 3, 0, 0,
+	Plotter plot(0, 17, 0, 9, 1, 3, 0, 0,
 		1, 0, 0, 24,
 		0, 28, 0, 27,
 		0, 10);
