@@ -2,7 +2,11 @@
 #include "chip.h"
 #include "rit.h"
 #include "BresenhamD.h"
-#include <cmath>
+namespace cmath{
+	inline int abs(int x){
+		return (x < 0) ? (-x) : (x);
+	}
+};
 Plotter::Plotter(int portlim0, int pinlim0,
 				int portlim1, int pinlim1,
 				int portlim2, int pinlim2,
@@ -48,9 +52,9 @@ Plotter::~Plotter(){
 	delete dir_y;
 }
 
-void Plotter::operator()(int dx, int dy){
-	int f = abs(dx);
-	int e = abs(dy);
+void Plotter::dif(int dx, int dy){
+	int f = cmath::abs(dx);
+	int e = cmath::abs(dy);
 
 	Axis * B;
 	Axis * H;
@@ -66,7 +70,7 @@ void Plotter::operator()(int dx, int dy){
 		dy = temp;
 	}
 	BresenhamD line(B, H, dx, dy);
-	f = abs(dx);
+	f = cmath::abs(dx);
 	if(f < 500){
 		rit::SetPulsePerSecond(4000);
 		line();
@@ -90,17 +94,32 @@ void Plotter::operator()(int dx, int dy){
 
 }
 
-void Plotter:: operator()(double xx, double yy){
+void Plotter:: dif(double ddx, double ddy){
 	int dx;
 	int dy;
 
-	dx = int(xx / x.stepToMm(1));
-	dy = int(yy / y.stepToMm(1));
+	dx = int(ddx / x.stepToMm(1));
+	dy = int(ddy / y.stepToMm(1));
 
-	dx = dx - x();
-	dy = dy - y();
+	dif(dx, dy);
+}
+void Plotter:: abs(double xx, double yy){
+	int ax;
+	int ay;
 
-	operator()(dx, dy);
+	ax = int(xx / x.stepToMm(1));
+	ay = int(yy / y.stepToMm(1));
+
+	Plotter::abs(ax, ay);
+}
+void Plotter:: abs(int xx, int yy){
+	int dx;
+	int dy;
+
+	dx = xx - x();
+	dy = yy - y();
+
+	dif(dx, dy);
 }
 
 

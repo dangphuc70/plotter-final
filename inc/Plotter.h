@@ -19,8 +19,10 @@ private:
 
 public:
 
-	void operator()(double xx, double yy);
-	void operator()(int dx, int dy);
+	void abs(double xx, double yy);
+	void abs(int xx, int yy);
+	void dif(int dx, int dy);
+	void dif(double dx, double dy);
 	void pen(int degree);
 	void home();
 	void reset();

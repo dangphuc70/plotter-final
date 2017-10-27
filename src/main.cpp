@@ -207,7 +207,7 @@ static void task(void *pvParameters){
 		if(task._Task == UniversalClass::M1){
 			plot.pen(task._SubTask);
 		}else if(task._Task == UniversalClass::G1){
-			plot(task._XCordinate, task._YCordinate);
+			plot.abs(task._XCordinate, task._YCordinate);
 		}else if(task._Task == UniversalClass::G28){
 			plot.home();
 		}else if(task._Task == UniversalClass::RESET){
