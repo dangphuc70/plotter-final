@@ -208,7 +208,7 @@ static void task(void *pvParameters){
 	Plotter plot(0, 29, 0, 9, 1, 3, 0, 0,
 		1, 0, 0, 24,
 		0, 28, 0, 27,
-		0, 10); // change the first limit (first pair) to actual limit pin
+		0, 10);
 
 	while(1){
 		xQueueReceive(xQueue, &task, portMAX_DELAY);
