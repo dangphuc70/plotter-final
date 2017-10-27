@@ -2,7 +2,11 @@
 #include "chip.h"
 #include "rit.h"
 #include "BresenhamD.h"
-#include <cmath>
+namespace cmath{
+	inline int abs(int x){
+		return (x < 0) ? (-x) : (x);
+	}
+};
 Plotter::Plotter(int portlim0, int pinlim0,
 				int portlim1, int pinlim1,
 				int portlim2, int pinlim2,
@@ -33,12 +37,12 @@ Plotter::Plotter(int portlim0, int pinlim0,
 	y.SetLim0(lim[2]);
 	y.SetLim1(lim[3]);
 
-	x.mmStep(10000, 100.0);
-	y.mmStep(10000, 100.0);
+	x.mmStep(3000, 35.0);
+	y.mmStep(3000, 35.0);
 
 	servo = 20;
 
-	rit RIT_init(NULL, 8000);
+	rit RIT_init(NULL, 1000);
 }
 
 Plotter::~Plotter(){
@@ -48,9 +52,9 @@ Plotter::~Plotter(){
 	delete dir_y;
 }
 
-void Plotter::operator()(int dx, int dy){
-	int f = abs(dx);
-	int e = abs(dy);
+void Plotter::dif(int dx, int dy){
+	int f = cmath::abs(dx);
+	int e = cmath::abs(dy);
 
 	Axis * B;
 	Axis * H;
@@ -66,22 +70,23 @@ void Plotter::operator()(int dx, int dy){
 		dy = temp;
 	}
 	BresenhamD line(B, H, dx, dy);
-	f = abs(dx);
+	f = cmath::abs(dx);
 	if(f < 500){
 		rit::SetPulsePerSecond(4000);
 		line();
 	}else{
 		int d = 500;
-		int a = d / 3;
-		int t = f - d;
-		int a1 = a / 3;
+		int a1 = d / 3;
 		int a2 = 2 * a1;
-		int a3 = a - (a1 + a2);
+		int a3 = d - (a1 + a2);
+
+		int t = f - d;
+
 		rit::SetPulsePerSecond(2000);
 		line(a1);
 		rit::SetPulsePerSecond(4000);
 		line(a2);
-		rit::SetPulsePerSecond(7000);
+		rit::SetPulsePerSecond(6000);
 		line(a3);
 		rit::SetPulsePerSecond(8000);
 		line(t);
@@ -89,17 +94,32 @@ void Plotter::operator()(int dx, int dy){
 
 }
 
-void Plotter:: operator()(double xx, double yy){
+void Plotter:: dif(double ddx, double ddy){
 	int dx;
 	int dy;
 
-	dx = int(xx / x.stepToMm(1));
-	dy = int(yy / y.stepToMm(1));
+	dx = int(ddx / x.stepToMm(1));
+	dy = int(ddy / y.stepToMm(1));
 
-	dx = dx - x();
-	dy = dy - y();
+	dif(dx, dy);
+}
+void Plotter:: abs(double xx, double yy){
+	int ax;
+	int ay;
 
-	operator()(dx, dy);
+	ax = int(xx / x.stepToMm(1));
+	ay = int(yy / y.stepToMm(1));
+
+	Plotter::abs(ax, ay);
+}
+void Plotter:: abs(int xx, int yy){
+	int dx;
+	int dy;
+
+	dx = xx - x();
+	dy = yy - y();
+
+	dif(dx, dy);
 }
 
 
@@ -110,4 +130,26 @@ void Plotter:: pen(int degree){
 void Plotter::home(){
 	x += -x();
 	y += -y();
+}
+
+void Plotter::reset(){
+	// information reset, assume pins and servo are functional and properly set
+	x = 0;
+	y = 0;
+	servo = 20;
+
+	// hardware reset
+	rit::poweroff();
+	rit::poweron();
+
+	rit RIT_init(NULL, 1000);
+
+}
+
+void Plotter::safety(bool on){
+	if(on){
+		Limit::enable();
+	}else{
+		Limit::disable();
+	}
 }

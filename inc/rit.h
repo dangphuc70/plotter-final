@@ -21,6 +21,9 @@ class rit
 
 	public:
 
+		static void poweroff();
+		static void poweroffFromISR(portBASE_TYPE *ptr);
+		static void poweron();
 		static void StopFromISR(portBASE_TYPE *ptr);
 		static portBASE_TYPE WaitForStop(TickType_t);
 		

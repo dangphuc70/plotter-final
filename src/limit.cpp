@@ -71,11 +71,18 @@ DigitalIoPin * Limit::operator[](int index){
 		return NULL;
 	}
 }
+DigitalIoPin * Limit:: ping(){
+	for(int i = 0; i < 4; ++i){
+		if(lim[i]->read()) return lim[i];
+	}
+	return NULL;
+}
 
 void Limit::ISR(){
 	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
 	
 	rit::StopFromISR(&xHigherPriorityWoken);
+	rit::poweroffFromISR(&xHigherPriorityWoken);
 	
 	portEND_SWITCHING_ISR(xHigherPriorityWoken);
 }
@@ -85,39 +92,31 @@ extern "C"
 // Limit x1 IRQ Handler
 void PIN_INT0_IRQHandler(void) {
 
-	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
+	
 	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH0);
-		rit::StopFromISR(&xHigherPriorityWoken);
-
-		portEND_SWITCHING_ISR(xHigherPriorityWoken);
+	Limit::ISR();
 }
 // Limit x2 IRQ Handler
 void PIN_INT1_IRQHandler(void) {
 
-	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
+	
 	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH1);
-		rit::StopFromISR(&xHigherPriorityWoken);
-
-		portEND_SWITCHING_ISR(xHigherPriorityWoken);
+	Limit::ISR();	
 }
 
 // Limit y1 IRQ Handler
 void PIN_INT2_IRQHandler(void) {
 
-	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
+	
 	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH2);
-		rit::StopFromISR(&xHigherPriorityWoken);
-
-		portEND_SWITCHING_ISR(xHigherPriorityWoken);
+	Limit::ISR();	
 }
 
 // Limit y2 IRQ Handler
 void PIN_INT3_IRQHandler(void) {
 
-	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
+	
 	Chip_PININT_ClearIntStatus(LPC_GPIO_PIN_INT, PININTCH3);
-		rit::StopFromISR(&xHigherPriorityWoken);
-
-		portEND_SWITCHING_ISR(xHigherPriorityWoken);
+	Limit::ISR();	
 }
 }
