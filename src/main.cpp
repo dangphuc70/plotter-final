@@ -181,7 +181,7 @@ static void receive_task(void *pvParameters)
 		if (len > 0)
 		{
 			c[len] = 0;
-			ITM_write(c);
+			//ITM_write(c);
 			CreateAndSendTask(c,len);
 		}
 	}
@@ -216,6 +216,8 @@ static void task(void *pvParameters){
 			plot.safety(false);
 		}else if(task._Task == UniversalClass::ENABLE_LIMIT_SAFETY){
 			plot.safety(true);
+		}else if(task._Task == UniversalClass::M4){
+			ITM_write("Done\n");
 		}
 	}
 }
