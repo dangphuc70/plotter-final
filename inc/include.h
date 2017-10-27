@@ -4,7 +4,7 @@
 
 //Insert your own classes
 #include "UniversalClass.h"
-
+#include "GCodeInterpreter.h"
 #include <string>
 #include <cstdlib>
 #include <stdlib.h>

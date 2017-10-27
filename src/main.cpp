@@ -29,12 +29,10 @@
 EventGroupHandle_t io_sync;
 EventGroupHandle_t cdc_sync;
 
-const char _Answer[4]="OK\n";
 QueueHandle_t xQueue;
 Fmutex *mtx;
 TaskHandle_t xTaskCDCHandle;
 
-// initialize
 /* Sets up system hardware */
 static void prvSetupHardware(void)
 {
@@ -45,8 +43,8 @@ static void prvSetupHardware(void)
 	Board_LED_Set(0, true);
 
 	xQueue = xQueueCreate( 10, sizeof( UniversalClass::task ) );
-		mtx = new Fmutex();
-		xTaskCDCHandle = NULL;
+	mtx = new Fmutex();
+	xTaskCDCHandle = NULL;
 
 	io_sync = xEventGroupCreate();
 	cdc_sync = xEventGroupCreate();
@@ -63,112 +61,6 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 }
 
-
-
-void sendOK()
-{
-	USB_send((uint8_t *)_Answer, 3);
-}
-
-void CreateAndSendTask(char* line, int len)
-{
-	UniversalClass::Task t;
-	t._Task = UniversalClass::ERROR;
-	t._SubTask = UniversalClass::ERROR;
-	t._XCordinate = 0;
-	t._YCordinate = 0;
-
-	std::string str(line,len);
-	std::string commands[4] = {};
-	int j = 0;
-
-	for (int i = 0; i < len; i++)
-	{
-		if (str[i] != ' ')
-		{
-			commands[j] = commands[j] + str[i];
-		}
-		else
-		{
-			j++;
-		}
-	}
-	j++;
-
-	for (int i = 0; i < j; i++)
-	{
-
-		if (commands[i][0] == 'X')
-		{
-			commands[i].erase(0, 1);
-			t._XCordinate = std::strtod(commands[i].c_str(),NULL);
-		}
-		else if (commands[i][0] == 'Y')
-		{
-			commands[i].erase(0, 1);
-			t._YCordinate = std::strtod(commands[i].c_str(),NULL);
-		}
-		else if (commands[i][0] == 'A' && commands[i][1] == '0')
-		{
-			t._SubTask = UniversalClass::A0;
-		}
-		else if (commands[i][0] == 'G' && commands[i][1] == '1')
-		{
-			t._Task = UniversalClass::G1;
-		}
-		else if (commands[i][0] == 'M' && commands[i][1] == '1' && (commands[i].length() > 2) )
-		{
-			t._Task = UniversalClass::M10;
-		}
-		else if (commands[i][0] == 'M' && commands[i][1] == '1')
-		{
-			t._Task = UniversalClass::M1;
-		}
-		else if (commands[i][0] == 'M' && commands[i][1] == '4')
-		{
-			t._Task = UniversalClass::M4;
-		}
-		else if (commands[i][0] == 'G' && commands[i][1] == '2')
-		{
-			t._Task = UniversalClass::G28;
-		}
-		else if (commands[i][0] == 'R' && commands[i][1] == 'S')
-		{
-			t._Task = UniversalClass::RESET;
-		}
-		else if (commands[i][0] == 'D' && commands[i][1] == 'S')
-		{
-			t._Task = UniversalClass::DISABLE_LIMIT_SAFETY;
-		}
-		else if (commands[i][0] == 'E' && commands[i][1] == 'N')
-		{
-			t._Task = UniversalClass::ENABLE_LIMIT_SAFETY;
-		}
-		else if (commands[i][0] == 'I' && commands[i][1] == 'X')
-		{
-			t._Task = UniversalClass::IX;
-		}
-		else if (commands[i][0] == 'I' && commands[i][1] == 'Y')
-		{
-			t._Task = UniversalClass::IY;
-		}
-		else
-		{
-			if (std::isdigit(commands[i][0]))
-			{
-				t._SubTask = std::strtod(commands[i].c_str(),NULL);
-			}
-		}
-
-	}
-	xQueueSendToBack( xQueue, &t,  portMAX_DELAY);
-	sendOK();
-}
-
-
-
-
-
 static void receive_task(void *pvParameters)
 {
 	xEventGroupWaitBits( cdc_sync,
@@ -177,20 +69,23 @@ static void receive_task(void *pvParameters)
 						 pdTRUE,
 						 portMAX_DELAY);
 	vTaskPrioritySet(xTaskCDCHandle,(tskIDLE_PRIORITY + 1UL));
+	UniversalClass::Task t;
+	GCodeInterpreter GCI;
 	uint32_t len;
-	char c[80];
+	char c[40];
 
 	xEventGroupSetBits( io_sync,
 						(1 << 0) );
-
 	while(true)
 	{
-		len = USB_receive((uint8_t *)c, 79);
+		len = USB_receive((uint8_t *)c, 39);
 		if (len > 0)
 		{
 			c[len] = 0;
-			//ITM_write(c);
-			CreateAndSendTask(c,len);
+			ITM_write(c);
+			t = GCI.CreateTask(c,len); // But it does not check if task is correct.
+			xQueueSendToBack( xQueue, &t,  portMAX_DELAY);
+			GCI.sendOK();
 		}
 	}
 }
@@ -237,13 +132,8 @@ static void task(void *pvParameters){
 
 void task_init(){
 	xTaskCreate(task, "task", configMINIMAL_STACK_SIZE * 3, NULL, tskIDLE_PRIORITY + 2UL, NULL);
-	 xTaskCreate(receive_task, "Rx",
-	 				configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-	 				(TaskHandle_t *) NULL);
-
-	 	xTaskCreate(cdc_task, "CDC",
-	 					configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),
-	 					(TaskHandle_t *) &xTaskCDCHandle);
+	xTaskCreate(receive_task, "Rx", configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL),	(TaskHandle_t *) NULL);
+	xTaskCreate(cdc_task, "CDC", configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY + 2UL), (TaskHandle_t *) &xTaskCDCHandle);
 	// needs join memory - 16_32k
 }
 
