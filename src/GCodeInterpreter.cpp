@@ -68,6 +68,26 @@ UniversalClass::Task GCodeInterpreter::CreateTask(char* line, int len)
 		{
 			t._Task = UniversalClass::G28;
 		}
+		else if (commands[i][0] == 'R' && commands[i][1] == 'S')
+		{
+			t._Task = UniversalClass::RESET;
+		}
+		else if (commands[i][0] == 'D' && commands[i][1] == 'S')
+		{
+			t._Task = UniversalClass::DISABLE_LIMIT_SAFETY;
+		}
+		else if (commands[i][0] == 'E' && commands[i][1] == 'N')
+		{
+			t._Task = UniversalClass::ENABLE_LIMIT_SAFETY;
+		}
+		else if (commands[i][0] == 'I' && commands[i][1] == 'X')
+		{
+			t._Task = UniversalClass::IX;
+		}
+		else if (commands[i][0] == 'I' && commands[i][1] == 'Y')
+		{
+			t._Task = UniversalClass::IY;
+		}
 		else if (std::isdigit(commands[i][0]))
 		{
 			t._SubTask = std::strtod(commands[i].c_str(),NULL);
