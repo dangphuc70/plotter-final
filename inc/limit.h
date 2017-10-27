@@ -21,6 +21,7 @@ public:
 
 	bool operator()(int index);
 	DigitalIoPin * operator[](int index);
+	DigitalIoPin * ping();
 
 public:
 

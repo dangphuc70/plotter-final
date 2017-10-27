@@ -22,7 +22,9 @@ enum tasks
 	M10 = 5,
 	RESET = 6,
 	DISABLE_LIMIT_SAFETY = 7,
-	ENABLE_LIMIT_SAFETY = 8
+	ENABLE_LIMIT_SAFETY = 8,
+	IX = 9,
+	IY = 10
 };
 struct Task
 {

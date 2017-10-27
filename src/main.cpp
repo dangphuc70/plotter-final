@@ -144,6 +144,14 @@ void CreateAndSendTask(char* line, int len)
 		{
 			t._Task = UniversalClass::ENABLE_LIMIT_SAFETY;
 		}
+		else if (commands[i][0] == 'I' && commands[i][1] == 'X')
+		{
+			t._Task = UniversalClass::IX;
+		}
+		else if (commands[i][0] == 'I' && commands[i][1] == 'Y')
+		{
+			t._Task = UniversalClass::IY;
+		}
 		else
 		{
 			if (std::isdigit(commands[i][0]))
@@ -218,6 +226,10 @@ static void task(void *pvParameters){
 			plot.safety(true);
 		}else if(task._Task == UniversalClass::M4){
 			ITM_write("Done\n");
+		}else if(task._Task == UniversalClass::IX){
+			plot.dif(task._SubTask, 0);
+		}else if(task._Task == UniversalClass::IY){
+			plot.dif(0, task._SubTask);
 		}
 	}
 }

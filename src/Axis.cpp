@@ -81,28 +81,38 @@ void Axis::decrement(int delta){
 
 bool Axis::FindLimit0(Limit& lim){
 
-	return FindLimit0(lim, 200);
+	return FindLimit0(lim, 2000);
 }
 
 bool Axis::FindLimit1(Limit& lim){
 
-	return FindLimit1(lim, 200);
+	return FindLimit1(lim, 2000);
 }
 
 
 // redo these two
-// step 1 : disable limits
 // step 2 : drive 1 step in one direction, check all limits, loop until one hits
 bool Axis::FindLimit0(Limit& lim, int pps){
-
-
+	DigitalIoPin * l;
+	int i = 30000;
+	while((l = lim.ping()) == NULL){
+		decrement();
+		i--;
+		if(i <= 0) break;
+	}
+	lim0 = l;
 	return lim0 != NULL;
 }
 
 bool Axis::FindLimit1(Limit& lim, int pps){
-
-
-
+	DigitalIoPin * l;
+	int i = 30000;
+	while((l = lim.ping()) == NULL){
+		increment();
+		i--;
+		if(i <= 0) break;
+	}
+	lim1 = l;
 	return lim1 != NULL;
 }
 

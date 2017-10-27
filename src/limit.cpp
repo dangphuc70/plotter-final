@@ -71,6 +71,12 @@ DigitalIoPin * Limit::operator[](int index){
 		return NULL;
 	}
 }
+DigitalIoPin * Limit:: ping(){
+	for(int i = 0; i < 4; ++i){
+		if(lim[i]->read()) return lim[i];
+	}
+	return NULL;
+}
 
 void Limit::ISR(){
 	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
