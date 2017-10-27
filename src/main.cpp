@@ -208,12 +208,13 @@ static void task(void *pvParameters){
 	Plotter plot(0, 17, 0, 9, 1, 3, 0, 0,
 		1, 0, 0, 24,
 		0, 28, 0, 27,
-		0, 10);
+		0, 10); // change the first limit (first pair) to actual limit pin
 
 	while(1){
 		xQueueReceive(xQueue, &task, portMAX_DELAY);
 		if(task._Task == UniversalClass::M1){
 			plot.pen(task._SubTask);
+			vTaskDelay(configTICK_RATE_HZ / 1000);
 		}else if(task._Task == UniversalClass::G1){
 			plot.abs(task._XCordinate, task._YCordinate);
 		}else if(task._Task == UniversalClass::G28){
