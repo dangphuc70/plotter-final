@@ -124,9 +124,14 @@ rit::rit(DigitalIoPin * pin, int pps, int count){
 }
 
 void rit::poweroff(){
+	StopFromISR(NULL);
 	Chip_RIT_DeInit(LPC_RITIMER);
 }
 
 void rit::poweron(){
 	Chip_RIT_Init(LPC_RITIMER);
+}
+void rit::poweroffFromISR(portBASE_TYPE *ptr){
+	xSemaphoreGiveFromISR(stop_b, ptr);
+	poweroff();
 }

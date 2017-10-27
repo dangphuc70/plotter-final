@@ -82,7 +82,7 @@ void Limit::ISR(){
 	portBASE_TYPE xHigherPriorityWoken = pdFALSE;
 	
 	rit::StopFromISR(&xHigherPriorityWoken);
-	rit::poweroff();
+	rit::poweroffFromISR(&xHigherPriorityWoken);
 	
 	portEND_SWITCHING_ISR(xHigherPriorityWoken);
 }
