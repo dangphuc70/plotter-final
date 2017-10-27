@@ -37,8 +37,8 @@ Plotter::Plotter(int portlim0, int pinlim0,
 	y.SetLim0(lim[2]);
 	y.SetLim1(lim[3]);
 
-	x.mmStep(10000, 100.0);
-	y.mmStep(10000, 100.0);
+	x.mmStep(3000, 35.0);
+	y.mmStep(3000, 35.0);
 
 	servo = 20;
 
