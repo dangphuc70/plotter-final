@@ -1,6 +1,10 @@
 # 2D plotter
 Firmware for an XY plotter
 
+_This is a team project_
+
+_In collaboration with 2 team members_
+
 Picture of a frog-like creature produced by the plotter
 
 ![Picture of a frog-like creature](/picture/frog-creature.jpeg)
