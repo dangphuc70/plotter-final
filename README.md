@@ -1,4 +1,4 @@
-# 2d plotter
+# 2D plotter
 Firmware for an XY plotter
 
 Picture of a frog-like creature produced by the plotter
