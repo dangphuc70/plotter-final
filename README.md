@@ -4,7 +4,7 @@ Firmware for an XY plotter
 Picture of a frog-like creature produced by the plotter
 
 ![Picture of a frog-like creature](/picture/frog-creature.jpeg)
-Video of the plotter in the process of producing the frog drawing is in folder \video
+Video of the plotter in the process of producing the above frog drawing is in folder \video (file drawing-frog-creature.mp4)
 
 Summary: project achieves 2d-plotting capability with 3 components:
 
