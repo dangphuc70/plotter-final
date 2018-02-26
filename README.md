@@ -14,4 +14,5 @@ Summary: project achieves 2d-plotting capability with 3 components:
 
   1. Software mDraw (for issuing drawing commands from a picture file)
   1. Development board LPC1549
-  1. Makeblock XY Plotter
+  1. Makeblock XY Plotter  
+![Makeblock XY Plotter](/picture/Makeblock-xy-plotter.jpeg)
